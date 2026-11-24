@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'content_record.dart';
 
 /// One baby-voice card for a gestational week.
 class WeekCard {
@@ -37,8 +38,8 @@ class WeekCard {
     babyLine: j['baby_line'] as String,
     sizeObject: j['size_object'] as String?,
     status: j['status'] as String,
-    approvedBy: j['approved_by'] as String,
-    approvedDate: j['approved_date'] as String,
+    approvedBy: j['approved_by'] as String? ?? '',
+    approvedDate: j['approved_date'] as String? ?? '',
   );
 
   static List<WeekCard> listFromJsonString(String raw) {
@@ -58,7 +59,13 @@ class WeekCard {
     for (final c in cards) {
       if (c.week != week) continue;
       if (c.status != 'approved') continue;
-      if (c.mode == 'both' || c.mode == mode) return c;
+      if (c.mode != 'both' && c.mode != mode) continue;
+      if (ContentGate.hasDatedReview(c.approvedBy, c.approvedDate) &&
+          c.babyLine.trim().isNotEmpty &&
+          ContentGate.bannedTerm(c.babyLine) == null &&
+          ContentGate.bannedTerm(c.sizeObject ?? '') == null) {
+        return c;
+      }
     }
     return null;
   }

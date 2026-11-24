@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:little_bumpy/content/content_loader.dart';
 import 'package:little_bumpy/domain/models/content_record.dart';
@@ -135,18 +137,83 @@ void main() {
     });
   });
 
+  test(
+    'one withdrawn Today line leaves reviewed neighbours available',
+    () async {
+      Map<String, String> row(String id, String status, String text) => {
+        'id': id,
+        'category': 'greeting',
+        'need': 'IRON',
+        'mode': 'both',
+        'tone': 'gentle',
+        'text': text,
+        'status': status,
+        'approved_by': status == 'approved' ? 'Fixture reviewer' : '',
+        'approved_date': status == 'approved' ? '2026-11-23' : '',
+      };
+      const path = 'test/partial-review-pack.json';
+      final raw = jsonEncode([
+        row('draft', 'draft', 'Draft greeting.'),
+        row('ready', 'approved', 'Hello.'),
+        row('withdrawn', 'needs_fix', 'Withdrawn greeting.'),
+        row('unsafe', 'approved', 'You missed it.'),
+        {
+          ...row('undated', 'approved', 'Undated greeting.'),
+          'approved_date': '',
+        },
+      ]);
+      final messenger =
+          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+      messenger.setMockMessageHandler('flutter/assets', (message) async {
+        expect(
+          utf8.decode(
+            message!.buffer.asUint8List(
+              message.offsetInBytes,
+              message.lengthInBytes,
+            ),
+          ),
+          path,
+        );
+        return ByteData.sublistView(utf8.encode(raw));
+      });
+      addTearDown(() {
+        messenger.setMockMessageHandler('flutter/assets', null);
+        rootBundle.evict(path);
+        ContentLoader.clearCache();
+      });
+      final visible = await ContentLoader.load(path);
+      expect(visible.map((r) => r.id), ['ready']);
+      expect(
+        ContentLoader.find(
+          records: visible,
+          need: 'IRON',
+          category: 'greeting',
+          mode: 'halloween',
+        )?.text,
+        'Hello.',
+      );
+      expect(
+        () => ContentGate.validateAll(ContentRecord.listFromJsonString(raw)),
+        throwsA(isA<ContentGateException>()),
+      );
+    },
+  );
+
   // ── Real JSON asset tests ─────────────────────────────────────────────────
 
   group('today_lines.json — real asset', () {
     late List<ContentRecord> records;
 
     setUpAll(() async {
-      ContentLoader.clearCache();
-      records = await ContentLoader.load('assets/content/today_lines.json');
+      final raw = await rootBundle.loadString(
+        'assets/content/today_lines.json',
+      );
+      records = ContentRecord.listFromJsonString(raw);
     });
 
     test('loads without throwing (all records pass gate)', () {
       expect(records, isNotEmpty);
+      expect(() => ContentGate.validateAll(records), returnsNormally);
     });
 
     test('every record has status approved', () {

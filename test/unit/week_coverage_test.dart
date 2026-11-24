@@ -23,8 +23,10 @@ void main() {
 
     test('every week 4–42 has at least one approved card', () {
       for (int w = 4; w <= 42; w++) {
-        final card = WeekCard.findFor(cards: cards, week: w, mode: 'everyday');
-        expect(card, isNotNull, reason: 'No approved card for week $w');
+        for (final mode in ['everyday', 'halloween']) {
+          final card = WeekCard.findFor(cards: cards, week: w, mode: mode);
+          expect(card, isNotNull, reason: 'No approved $mode card for week $w');
+        }
       }
     });
 

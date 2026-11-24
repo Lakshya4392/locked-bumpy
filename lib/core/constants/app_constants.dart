@@ -3,8 +3,16 @@
 class AppConstants {
   AppConstants._();
 
+  static const String appVersion = 'v1.0.0';
+  static const String privacyStatement =
+      'No data ever leaves your phone. No accounts. No tracking. No ads.';
+
   // ── SharedPreferences keys ──────────────────────────────────────────────
+  // The original estimate anchors Days Together, including on older installs.
+  static const String prefsCorrectedDueDateKey = 'corrected_due_date_iso';
   static const String prefsDueDateKey = 'due_date_iso';
+  static const String prefsVisitTopicsKey = 'visit_topics';
+  static const String prefsSkinToneKey = 'skin_tone';
   static const String prefsIsHalloweenKey = 'is_halloween';
   static const String prefsIsPausedKey = 'is_paused';
 
@@ -16,6 +24,11 @@ class AppConstants {
 
   /// Comma-separated completed check-in IDs for today.
   static const String prefsCheckInIdsKey = 'checkin_ids';
+  static const String prefsDailyNeedsKey = 'daily_needs_v2';
+
+  /// Written before Erase deletes anything; removed only after every owned
+  /// key is confirmed gone on disk. Present at startup = interrupted Erase.
+  static const String prefsEraseInProgressKey = 'erase_in_progress';
 
   // ── Gestational bounds ──────────────────────────────────────────────────
   static const int minWeek = 4;

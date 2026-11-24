@@ -43,3 +43,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# The browser portrait harness stages image bytes for its test only.
+/test/local_paper_*_test.dart

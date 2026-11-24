@@ -24,7 +24,7 @@ class AppNavBar extends StatelessWidget {
         onTap: state.setTab,
         backgroundColor: palette.tabBar,
         selectedItemColor: palette.accent,
-        unselectedItemColor: palette.tabBarText.withValues(alpha: 0.6),
+        unselectedItemColor: palette.tabBarText.withValues(alpha: 0.75),
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.today), label: 'Today'),
           BottomNavigationBarItem(

@@ -2,4 +2,4 @@
 # .kiro/hooks/content-check
 set -e
 echo "Running Little Bumpy Content Gate..."
-flutter test test/unit/content_gate_test.dart
+flutter test test/unit/content_gate_test.dart test/unit/week_coverage_test.dart test/unit/guide_article_test.dart test/unit/reviewed_content_test.dart

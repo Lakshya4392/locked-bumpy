@@ -22,9 +22,9 @@ class WeekCard {
     "mode": "both",
     "baby_line": "I am the size of a strawberry right now.",
     "size_object": "strawberry",
-    "status": "approved",
-    "approved_by": "Karan",
-    "approved_date": "2026-11-23"
+    "status": "draft",
+    "approved_by": "",
+    "approved_date": ""
   }
 ]
 ```

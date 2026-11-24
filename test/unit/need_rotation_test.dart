@@ -25,6 +25,17 @@ void main() {
       expect(NeedRotation.forDate(DateTime(2026, 11, 29)), MaternalNeed.iron);
     });
 
+    test('rotation advances one slot per local calendar date across DST', () {
+      for (var i = 0; i < 250; i++) {
+        final first = DateTime(2026, 11, 23 + i);
+        final next = DateTime(first.year, first.month, first.day + 1);
+        expect(
+          NeedRotation.forDate(next).index,
+          (NeedRotation.forDate(first).index + 1) % MaternalNeed.values.length,
+        );
+      }
+    });
+
     test('thirdCheckIn returns REST when need is WATER', () {
       expect(NeedRotation.thirdCheckIn(MaternalNeed.water), MaternalNeed.rest);
     });

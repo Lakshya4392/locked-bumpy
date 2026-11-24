@@ -39,7 +39,7 @@ void main() {
       await tester.pumpWidget(_wrap(TodayScreen(state: state), state));
       await tester.pump();
 
-      expect(find.text("Today's 3 Check-Ins"), findsOneWidget);
+      expect(find.text("Today's check-ins"), findsOneWidget);
       expect(
         find.text(
           'This app is not medical advice. '
@@ -109,7 +109,37 @@ void main() {
       expect(find.text('Start Fresh'), findsOneWidget);
       expect(find.text('Erase all data'), findsOneWidget);
       // No check-ins shown while paused.
-      expect(find.text("Today's 3 Check-Ins"), findsNothing);
+      expect(find.text("Today's check-ins"), findsNothing);
+      expect(find.text('Try Erase again'), findsNothing);
+    });
+
+    testWidgets('interrupted Erase shows a retry and disables Resume', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'erase_in_progress': true,
+        'baby_nickname': 'Cub',
+        'other_app_setting': 'preserved',
+      });
+      final state = await AppState.load();
+      await tester.pumpWidget(_wrap(PausedScreen(state: state), state));
+      await tester.pump();
+
+      expect(find.textContaining('stays paused until Erase'), findsOneWidget);
+      final resume = tester.widget<ElevatedButton>(
+        find.ancestor(
+          of: find.text('Resume'),
+          matching: find.byType(ElevatedButton),
+        ),
+      );
+      expect(resume.onPressed, isNull);
+
+      await tester.tap(find.text('Try Erase again'));
+      await tester.pump();
+      expect(state.erasePending, isFalse);
+      expect(state.isFirstRun, isTrue);
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getKeys(), {'other_app_setting'});
     });
   });
 

@@ -26,9 +26,9 @@ Corresponding JSON (one object per line is fine; array of objects in file):
   "mode": "halloween",
   "tone": "cheeky",
   "text": "I vant... lentils. Or beans. Your pick.",
-  "status": "approved",
-  "approved_by": "Karan",
-  "approved_date": "2026-11-23"
+  "status": "draft",
+  "approved_by": "",
+  "approved_date": ""
 }
 ```
 

@@ -1,0 +1,68 @@
+[
+  {
+    "id": "guide_iron",
+    "need": "IRON",
+    "body": "Beans and lentils both contain iron. Your doctor decides the amount.",
+    "questions": [
+      "Which iron-rich foods fit the way I eat?"
+    ],
+    "status": "draft",
+    "approved_by": "",
+    "approved_date": ""
+  },
+  {
+    "id": "guide_brain",
+    "need": "BRAIN",
+    "body": "Folate supports early development of the brain and spinal cord. Your doctor decides the amount.",
+    "questions": [
+      "What would you like me to know about folate?"
+    ],
+    "status": "draft",
+    "approved_by": "",
+    "approved_date": ""
+  },
+  {
+    "id": "guide_bones",
+    "need": "BONES",
+    "body": "Calcium helps build bones and teeth. Your doctor decides the amount.",
+    "questions": [
+      "Which foods could help me get enough calcium?"
+    ],
+    "status": "draft",
+    "approved_by": "",
+    "approved_date": ""
+  },
+  {
+    "id": "guide_water",
+    "need": "WATER",
+    "body": "Drinking water is one way to stay hydrated during pregnancy. Your doctor decides the amount.",
+    "questions": [
+      "How much fluid makes sense for me?"
+    ],
+    "status": "draft",
+    "approved_by": "",
+    "approved_date": ""
+  },
+  {
+    "id": "guide_rest",
+    "need": "REST",
+    "body": "Sleep and energy can change during pregnancy. Your doctor decides the amount.",
+    "questions": [
+      "When would you like me to mention changes in my sleep?"
+    ],
+    "status": "draft",
+    "approved_by": "",
+    "approved_date": ""
+  },
+  {
+    "id": "guide_vitamin",
+    "need": "VITAMIN",
+    "body": "Prenatal vitamins vary in the nutrients they contain. Your doctor decides the amount.",
+    "questions": [
+      "Could we look at my prenatal vitamin label together?"
+    ],
+    "status": "draft",
+    "approved_by": "",
+    "approved_date": ""
+  }
+]

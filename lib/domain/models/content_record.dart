@@ -49,8 +49,8 @@ class ContentRecord {
     tone: j['tone'] as String,
     text: j['text'] as String,
     status: j['status'] as String,
-    approvedBy: j['approved_by'] as String,
-    approvedDate: j['approved_date'] as String,
+    approvedBy: j['approved_by'] as String? ?? '',
+    approvedDate: j['approved_date'] as String? ?? '',
   );
 
   static List<ContentRecord> listFromJsonString(String raw) {
@@ -136,18 +136,35 @@ class ContentGate {
 
   /// Validates [record]. Throws [ContentGateException] on first violation.
   static void validate(ContentRecord record) {
+    final issue = _reviewIssue(record);
+    if (issue != null) throw ContentGateException(record, issue);
+  }
+
+  static bool canDisplay(ContentRecord record) => _reviewIssue(record) == null;
+
+  static String? _reviewIssue(ContentRecord record) {
     if (record.status != 'approved') {
-      throw ContentGateException(
-        record,
-        'status is "${record.status}", expected "approved"',
-      );
+      return 'status is "${record.status}", expected "approved"';
     }
-    final lower = record.text.toLowerCase();
+    if (!hasDatedReview(record.approvedBy, record.approvedDate)) {
+      return 'missing reviewer or invalid review date';
+    }
+    final banned = bannedTerm(record.text);
+    return banned == null ? null : 'text contains banned term "$banned"';
+  }
+
+  static bool hasDatedReview(String reviewer, String date) {
+    if (reviewer.trim().isEmpty || date.length != 10) return false;
+    final parsed = DateTime.tryParse('${date}T00:00:00Z');
+    return parsed != null && parsed.toIso8601String().split('T').first == date;
+  }
+
+  static String? bannedTerm(String text) {
+    final lower = text.toLowerCase();
     for (final word in _banned) {
-      if (lower.contains(word)) {
-        throw ContentGateException(record, 'text contains banned term "$word"');
-      }
+      if (lower.contains(word)) return word;
     }
+    return null;
   }
 
   /// Validates all [records]. Returns them unchanged if all pass.

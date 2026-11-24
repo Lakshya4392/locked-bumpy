@@ -13,11 +13,13 @@ Every text line shown in the app comes from a structured content record:
   "mode": "both",
   "tone": "both",
   "text": "Iron snack? Lentils or beans, your pick.",
-  "status": "approved",
-  "approved_by": "Karan",
-  "approved_date": "2026-11-22"
+  "status": "draft",
+  "approved_by": "",
+  "approved_date": ""
 }
 ```
+
+Start every new or revised line as a draft with blank review fields. Record a reviewer and date only after that person approves the exact wording. A schema example and a passing test cannot establish approval.
 
 ## Review States
 - `draft`: Newly authored line; gate test will fail if rendered in production.

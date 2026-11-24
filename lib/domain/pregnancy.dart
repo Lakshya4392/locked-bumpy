@@ -5,42 +5,33 @@ class PregnancyCalculator {
   /// Standard full-term pregnancy duration from LMP is 280 days (40 weeks).
   static const int fullTermDays = 280;
 
-  /// Calculates gestational week (clamped between 4 and 42) from a Due Date and current date.
+  /// Two calendar dates can be 23 or 25 hours apart at local midnight.
+  static DateTime _civilDate(DateTime date) =>
+      DateTime.utc(date.year, date.month, date.day);
+
+  static int daysFromDueDate({
+    required DateTime dueDate,
+    required DateTime currentDate,
+  }) =>
+      fullTermDays +
+      _civilDate(currentDate).difference(_civilDate(dueDate)).inDays;
+
+  static DateTime dueDateFromLmp(DateTime lmp) =>
+      DateTime(lmp.year, lmp.month, lmp.day + fullTermDays);
+
   static int weekFromDueDate({
     required DateTime dueDate,
     required DateTime currentDate,
-  }) {
-    final normalizedDue = DateTime(dueDate.year, dueDate.month, dueDate.day);
-    final normalizedCurrent = DateTime(
-      currentDate.year,
-      currentDate.month,
-      currentDate.day,
-    );
+  }) => (daysFromDueDate(dueDate: dueDate, currentDate: currentDate) ~/ 7)
+      .clamp(4, 42);
 
-    final daysRemaining = normalizedDue.difference(normalizedCurrent).inDays;
-    final gestationalDays = fullTermDays - daysRemaining;
-    final rawWeek = gestationalDays ~/ 7;
-
-    return rawWeek.clamp(4, 42);
-  }
-
-  /// Calculates gestational week from Last Menstrual Period (LMP).
   static int weekFromLmp({
     required DateTime lmpDate,
     required DateTime currentDate,
-  }) {
-    final normalizedLmp = DateTime(lmpDate.year, lmpDate.month, lmpDate.day);
-    final normalizedCurrent = DateTime(
-      currentDate.year,
-      currentDate.month,
-      currentDate.day,
-    );
-
-    final gestationalDays = normalizedCurrent.difference(normalizedLmp).inDays;
-    final rawWeek = gestationalDays ~/ 7;
-
-    return rawWeek.clamp(4, 42);
-  }
+  }) => weekFromDueDate(
+    dueDate: dueDateFromLmp(lmpDate),
+    currentDate: currentDate,
+  );
 
   /// Human-readable week format
   static String formatWeekTitle(int week) {

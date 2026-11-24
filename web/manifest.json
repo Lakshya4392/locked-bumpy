@@ -1,12 +1,12 @@
 {
-    "name": "little_bumpy",
-    "short_name": "little_bumpy",
+    "name": "Little Bumpy",
+    "short_name": "Little Bumpy",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "background_color": "#1A1224",
+    "theme_color": "#1A1224",
+    "description": "An offline pregnancy companion with daily check-ins and a paper-cut nursery.",
+    "orientation": "any",
     "prefer_related_applications": false,
     "icons": [
         {

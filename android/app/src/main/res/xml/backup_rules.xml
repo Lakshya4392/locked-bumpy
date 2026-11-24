@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-extraction-rules>
+    <!-- The app stores its date, name and check-ins exclusively in shared preferences. -->
+    <cloud-backup>
+        <exclude domain="sharedpref" path="." />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="sharedpref" path="." />
+    </device-transfer>
+    <cross-platform-transfer platform="ios">
+        <exclude domain="sharedpref" path="." />
+    </cross-platform-transfer>
+</data-extraction-rules>

@@ -73,6 +73,10 @@ class AppPalette extends ThemeExtension<AppPalette> {
     isHalloween: true,
   );
 
+  // Erase is displayed on the dark sky in both looks.
+  static const eraseAccent = Color(0xFFFF8A80);
+  static const eraseInk = Color(0xFF2E2040);
+
   // Six Need Colors (identical across both modes)
   static const needIron = Color(0xFFB8475E); // Leaf / vampire
   static const needBrain = Color(0xFF6E9A5B); // Round brain / zombie

@@ -21,8 +21,8 @@ class NeedRotation {
   /// Returns the [MaternalNeed] for [date].
   static MaternalNeed forDate(DateTime date) {
     final epoch = AppConstants.rotationEpoch;
-    final normalizedDate = DateTime(date.year, date.month, date.day);
-    final normalizedEpoch = DateTime(epoch.year, epoch.month, epoch.day);
+    final normalizedDate = DateTime.utc(date.year, date.month, date.day);
+    final normalizedEpoch = DateTime.utc(epoch.year, epoch.month, epoch.day);
     final dayOffset = normalizedDate.difference(normalizedEpoch).inDays;
     // Positive modulo to handle dates before epoch.
     final index = dayOffset % _order.length;
@@ -37,4 +37,15 @@ class NeedRotation {
     }
     return todayNeed;
   }
+
+  /// Keep the day's featured need first, with each action shown exactly once.
+  static List<MaternalNeed> checkIns(MaternalNeed today) => [
+    today,
+    for (final other in [
+      MaternalNeed.water,
+      MaternalNeed.vitamin,
+      thirdCheckIn(today),
+    ])
+      if (other != today) other,
+  ];
 }
