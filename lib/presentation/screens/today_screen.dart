@@ -249,10 +249,9 @@ class _TodayScreenState extends State<TodayScreen>
           ),
           const SizedBox(height: 14),
 
-          // ── 3 Clean Borderless Row Check-In Cards ───────────────────────
+          // ── 3 Clean Borderless Row Check-In Cards (Title-only + Big Icon) ─
           _CheckInRowCard(
             title: _titleCaseNeed(need),
-            subtitle: need.foodHint,
             need: need,
             isTicked: needTicked,
             palette: palette,
@@ -261,7 +260,6 @@ class _TodayScreenState extends State<TodayScreen>
           const SizedBox(height: 10),
           _CheckInRowCard(
             title: 'Water',
-            subtitle: MaternalNeed.water.foodHint,
             need: MaternalNeed.water,
             isTicked: waterTicked,
             palette: palette,
@@ -270,9 +268,6 @@ class _TodayScreenState extends State<TodayScreen>
           const SizedBox(height: 10),
           _CheckInRowCard(
             title: thirdNeed == MaternalNeed.rest ? 'Rest' : 'Prenatal Vitamin',
-            subtitle: thirdNeed == MaternalNeed.rest
-                ? MaternalNeed.rest.foodHint
-                : MaternalNeed.vitamin.foodHint,
             need: thirdNeed == MaternalNeed.rest
                 ? MaternalNeed.rest
                 : MaternalNeed.vitamin,
@@ -287,12 +282,11 @@ class _TodayScreenState extends State<TodayScreen>
   }
 }
 
-// ── Clean Borderless Check-In Row Card (Image 2 "Today's breakdown" style) ─
+// ── Clean Borderless Check-In Row Card (Big Icon + Title Only) ─────────────
 
 class _CheckInRowCard extends StatelessWidget {
   const _CheckInRowCard({
     required this.title,
-    required this.subtitle,
     required this.need,
     required this.isTicked,
     required this.palette,
@@ -300,7 +294,6 @@ class _CheckInRowCard extends StatelessWidget {
   });
 
   final String title;
-  final String subtitle;
   final MaternalNeed need;
   final bool isTicked;
   final AppPalette palette;
@@ -343,36 +336,23 @@ class _CheckInRowCard extends StatelessWidget {
               onTap: onTap,
               borderRadius: BorderRadius.circular(22),
               child: Container(
-                constraints: const BoxConstraints(minHeight: 68),
+                constraints: const BoxConstraints(minHeight: 64),
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 11,
+                  horizontal: 16,
+                  vertical: 10,
                 ),
                 child: Row(
                   children: [
-                    NeedIconBadge(need: need, size: 46, isCompleted: isTicked),
+                    NeedIconBadge(need: need, size: 44, isCompleted: isTicked),
                     const SizedBox(width: 14),
                     Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            title,
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: palette.ink,
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            subtitle,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: palette.inkSoft,
-                            ),
-                          ),
-                        ],
+                      child: Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: palette.ink,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 8),

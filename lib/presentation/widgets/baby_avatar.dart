@@ -109,7 +109,7 @@ class _BabyAvatarState extends State<BabyAvatar>
       vsync: this,
       duration: const Duration(milliseconds: 2600),
     )..repeat(reverse: true);
-    _breatheOffset = Tween<double>(begin: 0, end: -4.0).animate(
+    _breatheOffset = Tween<double>(begin: 1.0, end: 1.018).animate(
       CurvedAnimation(parent: _breatheController, curve: Curves.easeInOutSine),
     );
   }
@@ -201,8 +201,12 @@ class _BabyAvatarState extends State<BabyAvatar>
       builder: (_, child) {
         final hop = widget.hopAnimation?.value ?? 0.0;
         return Transform.translate(
-          offset: Offset(0, _breatheOffset.value + hop),
-          child: child,
+          offset: Offset(0, hop),
+          child: Transform.scale(
+            scale: _breatheOffset.value,
+            alignment: Alignment.bottomCenter,
+            child: child,
+          ),
         );
       },
       child: doll,

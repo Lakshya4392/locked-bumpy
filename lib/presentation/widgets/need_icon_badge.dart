@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../core/theme/palette.dart';
 import '../../domain/models/need.dart';
 
-/// Illustrated need icon inside a circular ring badge (inspired by clean health rings).
+/// Illustrated need icon (clean, borderless PNG for high visual clarity).
 class NeedIconBadge extends StatelessWidget {
   const NeedIconBadge({
     super.key,
     required this.need,
-    this.size = 46,
+    this.size = 44,
     this.isCompleted = false,
   });
 
@@ -28,27 +27,22 @@ class NeedIconBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final palette = AppPalette.of(context);
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 220),
-      width: size,
-      height: size,
-      padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        color: isCompleted
-            ? need.color.withValues(alpha: 0.22)
-            : palette.paperRaised,
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: isCompleted ? need.color : need.color.withValues(alpha: 0.35),
-          width: isCompleted ? 2.5 : 1.5,
-        ),
-      ),
-      child: Image.asset(
-        iconPathFor(need),
-        fit: BoxFit.contain,
-        errorBuilder: (_, _, _) => Container(
-          decoration: BoxDecoration(color: need.color, shape: BoxShape.circle),
+    return AnimatedScale(
+      scale: isCompleted ? 1.06 : 1.0,
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeOutBack,
+      child: SizedBox(
+        width: size,
+        height: size,
+        child: Image.asset(
+          iconPathFor(need),
+          fit: BoxFit.contain,
+          errorBuilder: (_, _, _) => Container(
+            decoration: BoxDecoration(
+              color: need.color,
+              shape: BoxShape.circle,
+            ),
+          ),
         ),
       ),
     );
