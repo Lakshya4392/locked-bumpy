@@ -9,6 +9,7 @@ import '../sheets/closet_sheet.dart';
 import '../widgets/need_icon_badge.dart';
 import '../widgets/nursery_stage.dart';
 import '../widgets/spring_tap.dart';
+import '../widgets/staggered_fade_slide.dart';
 
 /// Today tab — clean, clutter-free Nursery Hero + baby quote + 3 airy check-in row cards.
 class TodayScreen extends StatefulWidget {
@@ -250,30 +251,41 @@ class _TodayScreenState extends State<TodayScreen>
           const SizedBox(height: 14),
 
           // ── 3 Clean Borderless Row Check-In Cards (Title-only + Big Icon) ─
-          _CheckInRowCard(
-            title: _titleCaseNeed(need),
-            need: need,
-            isTicked: needTicked,
-            palette: palette,
-            onTap: () => _onCheckIn(AppConstants.checkInNeed),
+          StaggeredFadeSlide(
+            index: 1,
+            child: _CheckInRowCard(
+              title: _titleCaseNeed(need),
+              need: need,
+              isTicked: needTicked,
+              palette: palette,
+              onTap: () => _onCheckIn(AppConstants.checkInNeed),
+            ),
           ),
           const SizedBox(height: 10),
-          _CheckInRowCard(
-            title: 'Water',
-            need: MaternalNeed.water,
-            isTicked: waterTicked,
-            palette: palette,
-            onTap: () => _onCheckIn(AppConstants.checkInWater),
+          StaggeredFadeSlide(
+            index: 2,
+            child: _CheckInRowCard(
+              title: 'Water',
+              need: MaternalNeed.water,
+              isTicked: waterTicked,
+              palette: palette,
+              onTap: () => _onCheckIn(AppConstants.checkInWater),
+            ),
           ),
           const SizedBox(height: 10),
-          _CheckInRowCard(
-            title: thirdNeed == MaternalNeed.rest ? 'Rest' : 'Prenatal Vitamin',
-            need: thirdNeed == MaternalNeed.rest
-                ? MaternalNeed.rest
-                : MaternalNeed.vitamin,
-            isTicked: vitaminTicked,
-            palette: palette,
-            onTap: () => _onCheckIn(AppConstants.checkInVitamin),
+          StaggeredFadeSlide(
+            index: 3,
+            child: _CheckInRowCard(
+              title: thirdNeed == MaternalNeed.rest
+                  ? 'Rest'
+                  : 'Prenatal Vitamin',
+              need: thirdNeed == MaternalNeed.rest
+                  ? MaternalNeed.rest
+                  : MaternalNeed.vitamin,
+              isTicked: vitaminTicked,
+              palette: palette,
+              onTap: () => _onCheckIn(AppConstants.checkInVitamin),
+            ),
           ),
           const SizedBox(height: 8),
         ],

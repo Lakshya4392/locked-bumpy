@@ -53,44 +53,17 @@ class NurseryStage extends StatelessWidget {
               ),
             ),
 
-            // Everyday generated pastel nursery window backdrop
-            if (!palette.isHalloween)
-              Positioned.fill(
-                child: Image.asset(
-                  'assets/images/stage/pastel-everyday-stage.jpg',
-                  fit: BoxFit.cover,
-                  gaplessPlayback: true,
-                  errorBuilder: (_, _, _) => const SizedBox.shrink(),
-                ),
+            // Everyday or Halloween generated pastel nursery window backdrop
+            Positioned.fill(
+              child: Image.asset(
+                palette.isHalloween
+                    ? 'assets/images/stage/pastel-halloween-stage.jpg'
+                    : 'assets/images/stage/pastel-everyday-stage.jpg',
+                fit: BoxFit.cover,
+                gaplessPlayback: true,
+                errorBuilder: (_, _, _) => const SizedBox.shrink(),
               ),
-
-            // Halloween nursery texture overlay
-            if (palette.isHalloween)
-              Positioned.fill(
-                child: Opacity(
-                  opacity: 0.45,
-                  child: Image.asset(
-                    'assets/images/stage/night-nursery-violet.png',
-                    fit: BoxFit.cover,
-                    gaplessPlayback: true,
-                    errorBuilder: (_, _, _) => const SizedBox.shrink(),
-                  ),
-                ),
-              ),
-
-            // Pumpkin moon accent in Halloween mode
-            if (palette.isHalloween)
-              Positioned(
-                top: 10,
-                right: 16,
-                child: Image.asset(
-                  'assets/images/stage/pumpkin-moon.png',
-                  width: 50,
-                  height: 50,
-                  fit: BoxFit.contain,
-                  errorBuilder: (_, _, _) => const SizedBox.shrink(),
-                ),
-              ),
+            ),
 
             // Sparkle overlay on check-in celebration
             if (showSparkle && palette.isHalloween)

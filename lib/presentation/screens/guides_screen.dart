@@ -4,6 +4,7 @@ import '../../core/constants/app_constants.dart';
 import '../../core/theme/palette.dart';
 import '../../domain/models/guide_article.dart';
 import '../widgets/need_icon_badge.dart';
+import '../widgets/staggered_fade_slide.dart';
 
 /// Guides tab — 6 physician-authored maternal care guides.
 /// Uses calm, plain-English app voice (no baby voice, no clinical doses).
@@ -73,19 +74,23 @@ class _GuidesScreenState extends State<GuidesScreen> {
           style: TextStyle(fontSize: 13, color: palette.moonlightSoft),
         ),
         const SizedBox(height: 16),
-        ...articles.map((article) {
+        ...articles.asMap().entries.map((entry) {
+          final article = entry.value;
           final isExpanded = _expandedId == article.id;
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: _GuideCard(
-              article: article,
-              isExpanded: isExpanded,
-              palette: palette,
-              onTap: () {
-                setState(() {
-                  _expandedId = isExpanded ? null : article.id;
-                });
-              },
+          return StaggeredFadeSlide(
+            index: entry.key,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: _GuideCard(
+                article: article,
+                isExpanded: isExpanded,
+                palette: palette,
+                onTap: () {
+                  setState(() {
+                    _expandedId = isExpanded ? null : article.id;
+                  });
+                },
+              ),
             ),
           );
         }),
