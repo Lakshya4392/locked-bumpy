@@ -15,6 +15,8 @@ class BabyAvatar extends StatefulWidget {
     this.poseOverride,
     this.size = 156,
     this.hopAnimation,
+    this.wiggleAnimation,
+    this.animate = true,
   });
 
   final MaternalNeed need;
@@ -23,6 +25,8 @@ class BabyAvatar extends StatefulWidget {
   final String? poseOverride;
   final double size;
   final Animation<double>? hopAnimation;
+  final Animation<double>? wiggleAnimation;
+  final bool animate;
 
   /// Resolves the pastel PNG asset path for [need] in the given mode.
   static String assetPathFor({
@@ -64,7 +68,10 @@ class _BabyAvatarState extends State<BabyAvatar>
     _breatheController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2600),
-    )..repeat(reverse: true);
+    );
+    if (widget.animate) {
+      _breatheController.repeat(reverse: true);
+    }
     _breatheScale = Tween<double>(begin: 1.0, end: 1.018).animate(
       CurvedAnimation(parent: _breatheController, curve: Curves.easeInOutSine),
     );
@@ -79,7 +86,8 @@ class _BabyAvatarState extends State<BabyAvatar>
   @override
   Widget build(BuildContext context) {
     final palette = AppPalette.of(context);
-    final disableAnimations = MediaQuery.disableAnimationsOf(context);
+    final disableAnimations =
+        !widget.animate || MediaQuery.disableAnimationsOf(context);
     if (disableAnimations && _breatheController.isAnimating) {
       _breatheController.stop();
     } else if (!disableAnimations && !_breatheController.isAnimating) {
@@ -120,15 +128,21 @@ class _BabyAvatarState extends State<BabyAvatar>
       animation: Listenable.merge([
         _breatheScale,
         if (widget.hopAnimation != null) widget.hopAnimation!,
+        if (widget.wiggleAnimation != null) widget.wiggleAnimation!,
       ]),
       builder: (_, child) {
         final hop = widget.hopAnimation?.value ?? 0.0;
+        final wiggle = widget.wiggleAnimation?.value ?? 0.0;
         return Transform.translate(
           offset: Offset(0, hop),
-          child: Transform.scale(
-            scale: _breatheScale.value,
+          child: Transform.rotate(
+            angle: wiggle,
             alignment: Alignment.bottomCenter,
-            child: child,
+            child: Transform.scale(
+              scale: _breatheScale.value,
+              alignment: Alignment.bottomCenter,
+              child: child,
+            ),
           ),
         );
       },

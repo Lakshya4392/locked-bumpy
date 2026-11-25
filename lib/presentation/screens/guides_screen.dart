@@ -19,6 +19,7 @@ class _GuidesScreenState extends State<GuidesScreen> {
   static List<GuideArticle>? _cachedArticles;
   List<GuideArticle>? _articles;
   String? _expandedId;
+  String _selectedFilter = 'All';
 
   @override
   void initState() {
@@ -57,6 +58,14 @@ class _GuidesScreenState extends State<GuidesScreen> {
       );
     }
 
+    final filtered = articles.where((a) {
+      if (_selectedFilter == 'All') return true;
+      final isDailyCare =
+          a.maternalNeed.needName == 'WATER' ||
+          a.maternalNeed.needName == 'REST';
+      return _selectedFilter == 'Daily Care' ? isDailyCare : !isDailyCare;
+    }).toList();
+
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       children: [
@@ -73,8 +82,39 @@ class _GuidesScreenState extends State<GuidesScreen> {
           'Gentle nutrition and care notes. Vegetarian & egg-free ideas.',
           style: TextStyle(fontSize: 13, color: palette.moonlightSoft),
         ),
-        const SizedBox(height: 16),
-        ...articles.asMap().entries.map((entry) {
+        const SizedBox(height: 12),
+        Row(
+          children: ['All', 'Nutrition', 'Daily Care'].map((label) {
+            final selected = _selectedFilter == label;
+            return Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: GestureDetector(
+                onTap: () => setState(() => _selectedFilter = label),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 7,
+                  ),
+                  decoration: BoxDecoration(
+                    color: selected ? palette.accent : palette.paper,
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w700,
+                      color: selected ? palette.accentText : palette.inkSoft,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+        const SizedBox(height: 14),
+        ...filtered.asMap().entries.map((entry) {
           final article = entry.value;
           final isExpanded = _expandedId == article.id;
           return StaggeredFadeSlide(
@@ -222,34 +262,37 @@ class _GuideCard extends StatelessWidget {
                           color: palette.ink,
                         ),
                       ),
-                      const SizedBox(height: 6),
-                      ...article.foodIdeas.map(
-                        (idea) => Padding(
-                          padding: const EdgeInsets.only(bottom: 4),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '• ',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
-                                  color: palette.accent,
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: article.foodIdeas
+                            .map(
+                              (idea) => Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 11,
+                                  vertical: 6,
                                 ),
-                              ),
-                              Expanded(
+                                decoration: BoxDecoration(
+                                  color: Color.alphaBlend(
+                                    needColor.withValues(
+                                      alpha: palette.isHalloween ? 0.18 : 0.10,
+                                    ),
+                                    palette.paperRaised,
+                                  ),
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
                                 child: Text(
                                   idea,
                                   style: TextStyle(
-                                    fontSize: 13,
-                                    color: palette.inkSoft,
-                                    height: 1.35,
+                                    fontSize: 12.5,
+                                    fontWeight: FontWeight.w600,
+                                    color: palette.ink,
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
+                            )
+                            .toList(),
                       ),
                     ],
                     if (article.questionsForDoctor.isNotEmpty) ...[

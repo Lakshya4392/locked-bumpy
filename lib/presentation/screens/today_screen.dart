@@ -22,12 +22,32 @@ class TodayScreen extends StatefulWidget {
 }
 
 class _TodayScreenState extends State<TodayScreen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late AnimationController _hopController;
   late Animation<double> _hopAnimation;
+  late AnimationController _wiggleController;
+  late Animation<double> _wiggleAnimation;
 
   List<ContentRecord>? _records;
   bool _hopping = false;
+  int? _nudgeIndex;
+  bool _showLove = false;
+
+  static const List<String> _everydayNudges = [
+    "Mommy, don't forget your prenatal vitamin today!",
+    'Mommy, take a cozy sip of water for both of us.',
+    "I'm stretching in here — rest your feet a bit, Mommy!",
+    'Mommy, remember your medicine & a gentle snack today.',
+    'You are doing great, Mommy. I love hanging out with you!',
+  ];
+
+  static const List<String> _halloweenNudges = [
+    "Mommy, don't forget your magic vitamin potion today!",
+    'Boo! Just checking if Mommy sipped her water.',
+    'Resting my tiny bones — take a cozy break, Mommy!',
+    'Mommy, keep an eye on your medicine & treats today!',
+    'Even tiny spooky babies need extra cuddles, Mommy!',
+  ];
 
   @override
   void initState() {
@@ -54,6 +74,19 @@ class _TodayScreenState extends State<TodayScreen>
       ),
     ]).animate(_hopController);
 
+    _wiggleController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 520),
+    );
+    _wiggleAnimation = TweenSequence<double>([
+      TweenSequenceItem(tween: Tween(begin: 0.0, end: -0.07), weight: 25),
+      TweenSequenceItem(tween: Tween(begin: -0.07, end: 0.07), weight: 35),
+      TweenSequenceItem(tween: Tween(begin: 0.07, end: -0.03), weight: 20),
+      TweenSequenceItem(tween: Tween(begin: -0.03, end: 0.0), weight: 20),
+    ]).animate(
+      CurvedAnimation(parent: _wiggleController, curve: Curves.easeInOut),
+    );
+
     _loadRecords();
   }
 
@@ -70,18 +103,40 @@ class _TodayScreenState extends State<TodayScreen>
   void dispose() {
     widget.state.removeListener(_onStateChanged);
     _hopController.dispose();
+    _wiggleController.dispose();
     super.dispose();
+  }
+
+  Future<void> _playBabyAntic({bool cycleNudge = false}) async {
+    if (cycleNudge && mounted) {
+      setState(() {
+        _nudgeIndex = ((_nudgeIndex ?? -1) + 1) % _everydayNudges.length;
+        _showLove = true;
+      });
+    }
+    if (_hopping) return;
+    _hopping = true;
+    await Future.wait([
+      _hopController.forward(from: 0),
+      _wiggleController.forward(from: 0),
+    ]);
+    _hopping = false;
+    if (mounted && _showLove) {
+      setState(() => _showLove = false);
+    }
   }
 
   Future<void> _onCheckIn(String id) async {
     final wasChecked = widget.state.isChecked(id);
     await widget.state.toggleCheckIn(id);
-    if (mounted) setState(() {});
+    if (mounted) {
+      setState(() {
+        _nudgeIndex = null;
+      });
+    }
 
-    if (id == AppConstants.checkInNeed && !wasChecked && !_hopping) {
-      _hopping = true;
-      await _hopController.forward(from: 0);
-      _hopping = false;
+    if (!wasChecked) {
+      await _playBabyAntic();
     }
   }
 
@@ -143,14 +198,17 @@ class _TodayScreenState extends State<TodayScreen>
     final waterTicked = state.isChecked(AppConstants.checkInWater);
     final vitaminTicked = state.isChecked(AppConstants.checkInVitamin);
     final allDone = state.allChecked;
-    final babyLine = _babyLine(need, needTicked, allDone, palette);
+    final nudges = palette.isHalloween ? _halloweenNudges : _everydayNudges;
+    final babyLine = _nudgeIndex != null
+        ? nudges[_nudgeIndex!]
+        : _babyLine(need, needTicked, allDone, palette);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(16, 2, 16, 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // ── Separate Open Nursery Stage + Bumpy (no outer white box) ────
+          // ── Separate Open Nursery Stage + Bumpy (tap Bumpy for playful reminders)
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(28),
@@ -165,15 +223,16 @@ class _TodayScreenState extends State<TodayScreen>
               ],
             ),
             child: GestureDetector(
-              onTap: () => ClosetSheet.show(context, state),
+              onTap: () => _playBabyAntic(cycleNudge: true),
               child: NurseryStage(
                 need: avatarNeed,
                 tone: state.babyTone,
                 expression: _babyExpression(needTicked, allDone),
                 hopAnimation: _hopAnimation,
-                showSparkle: needTicked || allDone,
-                height: 292,
-                avatarSize: 234,
+                wiggleAnimation: _wiggleAnimation,
+                showSparkle: needTicked || allDone || _showLove,
+                height: 288,
+                avatarSize: 230,
                 borderRadius: BorderRadius.circular(28),
                 topLeftBadge: Container(
                   padding: const EdgeInsets.symmetric(
@@ -208,43 +267,94 @@ class _TodayScreenState extends State<TodayScreen>
                     ],
                   ),
                 ),
+                topRightBadge: GestureDetector(
+                  onTap: () => ClosetSheet.show(context, state),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: palette.paper.withValues(alpha: 0.92),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.checkroom_rounded,
+                          size: 13,
+                          color: palette.accent,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          palette.isHalloween ? 'Costumes' : 'Outfits',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: palette.ink,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
           const SizedBox(height: 10),
 
-          // ── Separate Baby Speech Pill ───────────────────────────────────
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
-            decoration: BoxDecoration(
-              color: Color.alphaBlend(
-                need.color.withValues(alpha: palette.isHalloween ? 0.16 : 0.09),
-                palette.paper,
-              ),
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(
-                    alpha: palette.isHalloween ? 0.22 : 0.03,
+          // ── Separate Baby Speech Pill (tap for another Mommy reminder) ──
+          GestureDetector(
+            onTap: () => _playBabyAntic(cycleNudge: true),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
+              decoration: BoxDecoration(
+                color: Color.alphaBlend(
+                  need.color.withValues(
+                    alpha: palette.isHalloween ? 0.16 : 0.09,
                   ),
-                  blurRadius: 12,
-                  offset: const Offset(0, 3),
+                  palette.paper,
                 ),
-              ],
-            ),
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 240),
-              switchInCurve: Curves.easeOutCubic,
-              child: Text(
-                babyLine,
-                key: ValueKey(babyLine),
-                style: TextStyle(
-                  fontSize: 15.5,
-                  fontWeight: FontWeight.w600,
-                  height: 1.35,
-                  color: palette.ink,
-                ),
-                textAlign: TextAlign.center,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(
+                      alpha: palette.isHalloween ? 0.22 : 0.03,
+                    ),
+                    blurRadius: 12,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 240),
+                      switchInCurve: Curves.easeOutCubic,
+                      child: Text(
+                        babyLine,
+                        key: ValueKey(babyLine),
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          height: 1.35,
+                          color: palette.ink,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Icon(
+                    _showLove
+                        ? Icons.favorite_rounded
+                        : Icons.chat_bubble_outline_rounded,
+                    size: 15,
+                    color: palette.accent.withValues(alpha: 0.8),
+                  ),
+                ],
               ),
             ),
           ),

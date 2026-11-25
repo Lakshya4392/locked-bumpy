@@ -15,7 +15,9 @@ class NurseryStage extends StatelessWidget {
     this.height = 216,
     this.avatarSize = 168,
     this.hopAnimation,
+    this.wiggleAnimation,
     this.topLeftBadge,
+    this.topRightBadge,
     this.showSparkle = false,
     this.borderRadius,
   });
@@ -27,7 +29,9 @@ class NurseryStage extends StatelessWidget {
   final double height;
   final double avatarSize;
   final Animation<double>? hopAnimation;
+  final Animation<double>? wiggleAnimation;
   final Widget? topLeftBadge;
+  final Widget? topRightBadge;
   final bool showSparkle;
   final BorderRadius? borderRadius;
 
@@ -126,12 +130,17 @@ class NurseryStage extends StatelessWidget {
                 poseOverride: poseOverride,
                 size: avatarSize,
                 hopAnimation: hopAnimation,
+                wiggleAnimation: wiggleAnimation,
               ),
             ),
 
             // Top-left floating pill badge
             if (topLeftBadge != null)
               Positioned(top: 12, left: 12, child: topLeftBadge!),
+
+            // Top-right floating pill badge
+            if (topRightBadge != null)
+              Positioned(top: 12, right: 12, child: topRightBadge!),
           ],
         ),
       ),

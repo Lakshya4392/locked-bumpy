@@ -3,6 +3,7 @@ import '../../core/constants/app_constants.dart';
 import '../../core/theme/palette.dart';
 import '../../domain/models/app_state.dart';
 import '../../domain/pregnancy.dart';
+import '../widgets/baby_avatar.dart';
 
 /// Settings screen — edit nickname, due date, look mode, view privacy
 /// & medical disclaimer, or erase all on-device data.
@@ -160,6 +161,62 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     child: ListView(
                       padding: const EdgeInsets.all(16),
                       children: [
+                        // ── Mom & Bumpy Summary Card ───────────────────────
+                        Container(
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: palette.paper,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 52,
+                                height: 52,
+                                decoration: BoxDecoration(
+                                  color: palette.paperRaised,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: ClipOval(
+                                  child: BabyAvatar(
+                                    need: state.costumeOverride ??
+                                        state.todayNeed,
+                                    size: 50,
+                                    animate: false,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      state.babyDisplayName,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w800,
+                                        color: palette.ink,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      dueDate == null
+                                          ? 'Set your expected due date below'
+                                          : 'Week ${PregnancyCalculator.weekFromDueDate(dueDate: dueDate, currentDate: DateTime.now())} of 42 • On-device only',
+                                      style: TextStyle(
+                                        fontSize: 12.5,
+                                        color: palette.inkSoft,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+
                         // ── Baby & Date ────────────────────────────────────
                         Container(
                           padding: const EdgeInsets.all(16),
@@ -240,65 +297,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                               const SizedBox(height: 16),
                               Text(
-                                'Baby Tone',
+                                'Expected Due Date',
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.bold,
                                   color: palette.inkSoft,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                'Used to calculate your current week (Week 4–42)',
+                                style: TextStyle(
+                                  fontSize: 11.5,
+                                  color: palette.inkSoft.withValues(alpha: 0.8),
                                 ),
                               ),
                               const SizedBox(height: 8),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children:
-                                    [
-                                      ('fair', const Color(0xFFF1C9A8)),
-                                      ('peach', const Color(0xFFFAB073)),
-                                      ('honey', const Color(0xFFDCA06D)),
-                                      ('deep', const Color(0xFF9B6142)),
-                                      ('deepest', const Color(0xFF844934)),
-                                    ].map((entry) {
-                                      final isSelected =
-                                          state.babyTone == entry.$1;
-                                      return Semantics(
-                                        label: 'Baby tone ${entry.$1}',
-                                        selected: isSelected,
-                                        button: true,
-                                        child: InkWell(
-                                          onTap: () =>
-                                              state.saveBabyTone(entry.$1),
-                                          customBorder: const CircleBorder(),
-                                          child: Container(
-                                            width: 36,
-                                            height: 36,
-                                            decoration: BoxDecoration(
-                                              color: entry.$2,
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                color: isSelected
-                                                    ? palette.accent
-                                                    : palette.ink.withValues(
-                                                        alpha: 0.2,
-                                                      ),
-                                                width: isSelected ? 3 : 1.5,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    }).toList(),
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                'Due Date',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
-                                  color: palette.inkSoft,
-                                ),
-                              ),
-                              const SizedBox(height: 6),
                               InkWell(
                                 onTap: () => _pickDueDate(palette),
                                 borderRadius: BorderRadius.circular(12),

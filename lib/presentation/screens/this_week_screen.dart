@@ -259,8 +259,29 @@ class _WeekCardView extends StatelessWidget {
   final MaternalNeed avatarNeed;
   final bool isCurrentWeek;
 
+  String _mommyFocus(int week) {
+    if (week <= 12) {
+      return 'Early days: tiny sips of water, leafy greens or beans when you feel up to it, and your daily prenatal vitamin.';
+    }
+    if (week <= 27) {
+      return 'Growing steady: calcium-rich bites like yogurt or cheese, plenty of water, and gentle rest whenever your body asks.';
+    }
+    return 'Home stretch: iron-rich snacks like lentils, steady hydration, and cozy breaks with your feet up.';
+  }
+
+  String _trimesterShort(int week) {
+    if (week <= 12) return '1st Trimester';
+    if (week <= 27) return '2nd Trimester';
+    return '3rd Trimester';
+  }
+
   @override
   Widget build(BuildContext context) {
+    final remaining = (40 - week).clamp(0, 36);
+    final remainingLabel = week >= 40
+        ? 'Due window'
+        : '$remaining wk${remaining == 1 ? '' : 's'} to 40';
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -278,85 +299,164 @@ class _WeekCardView extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Expanded(
-            flex: 6,
-            child: LayoutBuilder(
-              builder: (_, constraints) {
-                final h = constraints.maxHeight;
-                return NurseryStage(
-                  need: avatarNeed,
-                  tone: tone,
-                  expression: isCurrentWeek ? 'big-smile' : 'calm',
-                  height: h,
-                  avatarSize: (h * 0.80).clamp(150.0, 226.0),
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(28),
-                  ),
-                  topLeftBadge: isCurrentWeek
-                      ? Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 11,
-                            vertical: 5,
-                          ),
-                          decoration: BoxDecoration(
-                            color: palette.accent,
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: Text(
-                            'You are here',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                              color: palette.accentText,
-                            ),
-                          ),
-                        )
-                      : null,
-                );
-              },
-            ),
+          NurseryStage(
+            need: avatarNeed,
+            tone: tone,
+            expression: isCurrentWeek ? 'big-smile' : 'calm',
+            height: 196,
+            avatarSize: 166,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+            topLeftBadge: isCurrentWeek
+                ? Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 11,
+                      vertical: 5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: palette.accent,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Text(
+                      'You are here',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: palette.accentText,
+                      ),
+                    ),
+                  )
+                : null,
+            topRightBadge: card?.sizeObject != null
+                ? Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: palette.paper.withValues(alpha: 0.92),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Text(
+                      'Size of a ${card!.sizeObject}',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: palette.ink,
+                      ),
+                    ),
+                  )
+                : null,
           ),
           Expanded(
-            flex: 4,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(18, 14, 18, 14),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
                     card?.babyLine ?? 'Week $week is on the way.',
                     style: TextStyle(
-                      fontSize: 16.5,
-                      fontWeight: FontWeight.w600,
-                      height: 1.4,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      height: 1.38,
                       color: palette.ink,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  if (card?.sizeObject != null) ...[
-                    const SizedBox(height: 12),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 7,
-                      ),
-                      decoration: BoxDecoration(
-                        color: palette.paperRaised,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Text(
-                        'About the size of a ${card!.sizeObject}',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: palette.inkSoft,
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _WeekMetaPill(
+                          icon: Icons.calendar_today_rounded,
+                          label: _trimesterShort(week),
+                          palette: palette,
                         ),
-                        textAlign: TextAlign.center,
                       ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _WeekMetaPill(
+                          icon: Icons.favorite_border_rounded,
+                          label: remainingLabel,
+                          palette: palette,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.all(13),
+                    decoration: BoxDecoration(
+                      color: palette.paperRaised,
+                      borderRadius: BorderRadius.circular(18),
                     ),
-                  ],
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "MOMMY'S GENTLE FOCUS",
+                          style: TextStyle(
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.6,
+                            color: palette.accent,
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          _mommyFocus(week),
+                          style: TextStyle(
+                            fontSize: 13,
+                            height: 1.4,
+                            color: palette.inkSoft,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _WeekMetaPill extends StatelessWidget {
+  const _WeekMetaPill({
+    required this.icon,
+    required this.label,
+    required this.palette,
+  });
+
+  final IconData icon;
+  final String label;
+  final AppPalette palette;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: palette.paperRaised,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 13.5, color: palette.accent),
+          const SizedBox(width: 6),
+          Flexible(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: palette.ink,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],
