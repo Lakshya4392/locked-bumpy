@@ -10,8 +10,8 @@ import '../widgets/need_icon_badge.dart';
 import '../widgets/nursery_stage.dart';
 import '../widgets/spring_tap.dart';
 
-/// Today tab — warm illustrated nursery stage, speech bubble, quick outfit strip,
-/// featured Need of the Day card, and side-by-side Water / Vitamin bento tiles.
+/// Today tab — large illustrated nursery hero with Bumpy front-and-center,
+/// clean borderless bento check-in cards, and zero visual clutter.
 class TodayScreen extends StatefulWidget {
   const TodayScreen({super.key, required this.state});
 
@@ -157,92 +157,121 @@ class _TodayScreenState extends State<TodayScreen>
     final babyLine = _babyLine(need, needTicked, allDone, palette);
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // ── Illustrated Nursery Hero Card ───────────────────────────────
+          // ── Big Hero Nursery Stage + Baby ───────────────────────────────
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.fromLTRB(10, 10, 10, 16),
             decoration: BoxDecoration(
               color: palette.paper,
               borderRadius: BorderRadius.circular(28),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(
-                    alpha: palette.isHalloween ? 0.3 : 0.06,
+                    alpha: palette.isHalloween ? 0.32 : 0.05,
                   ),
-                  blurRadius: 18,
-                  offset: const Offset(0, 6),
+                  blurRadius: 22,
+                  offset: const Offset(0, 8),
                 ),
               ],
             ),
             child: Column(
               children: [
-                GestureDetector(
-                  onTap: palette.isHalloween
-                      ? () => ClosetSheet.show(context, state)
-                      : null,
-                  child: NurseryStage(
-                    need: avatarNeed,
-                    tone: state.babyTone,
-                    expression: _babyExpression(needTicked, allDone),
-                    hopAnimation: _hopAnimation,
-                    showSparkle: needTicked || allDone,
-                    height: 205,
-                    avatarSize: 162,
-                    topLeftBadge: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 11,
-                        vertical: 5,
-                      ),
-                      decoration: BoxDecoration(
-                        color: palette.paper.withValues(alpha: 0.92),
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(
-                          color: need.color.withValues(alpha: 0.55),
-                          width: 1.5,
+                Stack(
+                  children: [
+                    GestureDetector(
+                      onTap: () => ClosetSheet.show(context, state),
+                      child: NurseryStage(
+                        need: avatarNeed,
+                        tone: state.babyTone,
+                        expression: _babyExpression(needTicked, allDone),
+                        hopAnimation: _hopAnimation,
+                        showSparkle: needTicked || allDone,
+                        height: 244,
+                        avatarSize: 192,
+                        topLeftBadge: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 11,
+                            vertical: 5,
+                          ),
+                          decoration: BoxDecoration(
+                            color: palette.paper.withValues(alpha: 0.92),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 7,
+                                height: 7,
+                                decoration: BoxDecoration(
+                                  color: need.color,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                need.tag(palette),
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: palette.ink,
+                                  letterSpacing: 0.4,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: 7,
-                            height: 7,
-                            decoration: BoxDecoration(
-                              color: need.color,
-                              shape: BoxShape.circle,
+                    ),
+                    // Subtle floating Outfit / Closet pill in bottom-right of stage
+                    Positioned(
+                      bottom: 10,
+                      right: 10,
+                      child: SpringTap(
+                        onTap: () => ClosetSheet.show(context, state),
+                        child: Material(
+                          color: palette.paper.withValues(alpha: 0.9),
+                          borderRadius: BorderRadius.circular(16),
+                          child: InkWell(
+                            onTap: () => ClosetSheet.show(context, state),
+                            borderRadius: BorderRadius.circular(16),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 6,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.checkroom_rounded,
+                                    size: 14,
+                                    color: palette.ink,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    _outfitLabel(avatarNeed, palette),
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w700,
+                                      color: palette.ink,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                          const SizedBox(width: 6),
-                          Text(
-                            need.tag(palette),
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                              color: palette.ink,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-                const SizedBox(height: 12),
-
-                // Speech bubble
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: palette.paperRaised,
-                    borderRadius: BorderRadius.circular(18),
-                  ),
+                const SizedBox(height: 14),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 240),
                     switchInCurve: Curves.easeOutCubic,
@@ -250,7 +279,7 @@ class _TodayScreenState extends State<TodayScreen>
                       babyLine,
                       key: ValueKey(babyLine),
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 17,
                         fontWeight: FontWeight.w600,
                         height: 1.35,
                         color: palette.ink,
@@ -259,48 +288,10 @@ class _TodayScreenState extends State<TodayScreen>
                     ),
                   ),
                 ),
-                const SizedBox(height: 10),
-
-                // Quick 6-outfit / costume strip (parity across both modes)
-                SizedBox(
-                  height: 34,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: MaternalNeed.values.length,
-                    separatorBuilder: (_, _) => const SizedBox(width: 6),
-                    itemBuilder: (_, i) {
-                      final m = MaternalNeed.values[i];
-                      final isSelected = avatarNeed == m;
-                      return ChoiceChip(
-                        label: Text(
-                          _outfitLabel(m, palette),
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                            color: isSelected
-                                ? palette.accentText
-                                : palette.inkSoft,
-                          ),
-                        ),
-                        selected: isSelected,
-                        showCheckmark: false,
-                        selectedColor: palette.accent,
-                        backgroundColor: palette.paperRaised,
-                        side: BorderSide.none,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal: 6),
-                        onSelected: (_) =>
-                            state.setCostumeOverride(m == need ? null : m),
-                      );
-                    },
-                  ),
-                ),
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 18),
 
           // ── Check-ins header ────────────────────────────────────────────
           Padding(
@@ -329,7 +320,7 @@ class _TodayScreenState extends State<TodayScreen>
           ),
           const SizedBox(height: 10),
 
-          // Check-in 1 — Featured Need of the Day card
+          // Check-in 1 — Featured Need of the Day card (borderless!)
           _FeaturedCheckInCard(
             title: '${need.needName} · Need of the Day',
             subtitle: need.foodHint,
@@ -340,7 +331,7 @@ class _TodayScreenState extends State<TodayScreen>
           ),
           const SizedBox(height: 10),
 
-          // Check-ins 2 & 3 — Side-by-side Bento Tiles
+          // Check-ins 2 & 3 — Side-by-side Bento Tiles (borderless!)
           Row(
             children: [
               Expanded(
@@ -373,24 +364,24 @@ class _TodayScreenState extends State<TodayScreen>
             ],
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: 18),
           Text(
             AppConstants.disclaimer,
             style: TextStyle(
               fontSize: 11,
-              color: palette.moonlightSoft.withValues(alpha: 0.8),
+              color: palette.moonlightSoft.withValues(alpha: 0.78),
               height: 1.35,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
         ],
       ),
     );
   }
 }
 
-// ── Featured Need of the Day Card ──────────────────────────────────────────
+// ── Featured Need of the Day Card (Borderless, Soft Shadow) ────────────────
 
 class _FeaturedCheckInCard extends StatelessWidget {
   const _FeaturedCheckInCard({
@@ -411,86 +402,90 @@ class _FeaturedCheckInCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bgColor = isTicked
+        ? Color.alphaBlend(
+            need.color.withValues(alpha: palette.isHalloween ? 0.16 : 0.08),
+            palette.paper,
+          )
+        : palette.paper;
+
     return Semantics(
       label: '$title check-in',
       checked: isTicked,
       button: true,
       child: SpringTap(
         onTap: onTap,
-        child: Material(
-          color: palette.paper,
-          borderRadius: BorderRadius.circular(22),
-          elevation: palette.isHalloween ? 2 : 0.5,
-          shadowColor: Colors.black.withValues(alpha: 0.08),
-          child: InkWell(
-            onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(22),
-            child: Container(
-              constraints: const BoxConstraints(minHeight: 72),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(22),
-                color: isTicked
-                    ? need.color.withValues(alpha: 0.09)
-                    : Colors.transparent,
-                border: Border.all(
-                  color: isTicked
-                      ? need.color.withValues(alpha: 0.6)
-                      : need.color.withValues(alpha: 0.2),
-                  width: 1.5,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(
+                  alpha: palette.isHalloween ? 0.25 : 0.04,
                 ),
+                blurRadius: 16,
+                offset: const Offset(0, 4),
               ),
-              child: Row(
-                children: [
-                  NeedIconBadge(need: need, size: 48, isCompleted: isTicked),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          title,
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: palette.ink,
+            ],
+          ),
+          child: Material(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(22),
+            child: InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(22),
+              child: Container(
+                constraints: const BoxConstraints(minHeight: 70),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 12,
+                ),
+                child: Row(
+                  children: [
+                    NeedIconBadge(need: need, size: 46, isCompleted: isTicked),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: palette.ink,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          subtitle,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: palette.inkSoft,
+                          const SizedBox(height: 2),
+                          Text(
+                            subtitle,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: palette.inkSoft,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 220),
-                    width: 30,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      color: isTicked ? palette.accent : palette.paperRaised,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: isTicked
-                            ? palette.accent
-                            : palette.inkSoft.withValues(alpha: 0.3),
-                        width: 1.5,
+                        ],
                       ),
                     ),
-                    child: isTicked
-                        ? Icon(
-                            Icons.check_rounded,
-                            size: 18,
-                            color: palette.accentText,
-                          )
-                        : null,
-                  ),
-                ],
+                    const SizedBox(width: 8),
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 220),
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        color: isTicked ? palette.accent : palette.paperRaised,
+                        shape: BoxShape.circle,
+                      ),
+                      child: isTicked
+                          ? Icon(
+                              Icons.check_rounded,
+                              size: 17,
+                              color: palette.accentText,
+                            )
+                          : null,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -500,7 +495,7 @@ class _FeaturedCheckInCard extends StatelessWidget {
   }
 }
 
-// ── Compact Bento Check-In Tile ────────────────────────────────────────────
+// ── Compact Bento Check-In Tile (Borderless, Soft Shadow) ──────────────────
 
 class _BentoCheckInTile extends StatelessWidget {
   const _BentoCheckInTile({
@@ -521,90 +516,91 @@ class _BentoCheckInTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bgColor = isTicked
+        ? Color.alphaBlend(
+            need.color.withValues(alpha: palette.isHalloween ? 0.16 : 0.08),
+            palette.paper,
+          )
+        : palette.paper;
+
     return Semantics(
       label: '$title check-in',
       checked: isTicked,
       button: true,
       child: SpringTap(
         onTap: onTap,
-        child: Material(
-          color: palette.paper,
-          borderRadius: BorderRadius.circular(22),
-          elevation: palette.isHalloween ? 2 : 0.5,
-          shadowColor: Colors.black.withValues(alpha: 0.08),
-          child: InkWell(
-            onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(22),
-            child: Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(22),
-                color: isTicked
-                    ? need.color.withValues(alpha: 0.08)
-                    : Colors.transparent,
-                border: isTicked
-                    ? Border.all(
-                        color: need.color.withValues(alpha: 0.55),
-                        width: 1.5,
-                      )
-                    : null,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(
+                  alpha: palette.isHalloween ? 0.25 : 0.04,
+                ),
+                blurRadius: 16,
+                offset: const Offset(0, 4),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      NeedIconBadge(
-                        need: need,
-                        size: 40,
-                        isCompleted: isTicked,
-                      ),
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 220),
-                        width: 26,
-                        height: 26,
-                        decoration: BoxDecoration(
-                          color: isTicked
-                              ? palette.accent
-                              : palette.paperRaised,
-                          shape: BoxShape.circle,
-                          border: Border.all(
+            ],
+          ),
+          child: Material(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(22),
+            child: InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(22),
+              child: Padding(
+                padding: const EdgeInsets.all(14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        NeedIconBadge(
+                          need: need,
+                          size: 40,
+                          isCompleted: isTicked,
+                        ),
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 220),
+                          width: 26,
+                          height: 26,
+                          decoration: BoxDecoration(
                             color: isTicked
                                 ? palette.accent
-                                : palette.inkSoft.withValues(alpha: 0.3),
-                            width: 1.5,
+                                : palette.paperRaised,
+                            shape: BoxShape.circle,
                           ),
+                          child: isTicked
+                              ? Icon(
+                                  Icons.check_rounded,
+                                  size: 15,
+                                  color: palette.accentText,
+                                )
+                              : null,
                         ),
-                        child: isTicked
-                            ? Icon(
-                                Icons.check_rounded,
-                                size: 15,
-                                color: palette.accentText,
-                              )
-                            : null,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: palette.ink,
+                      ],
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    subtitle,
-                    style: TextStyle(fontSize: 11, color: palette.inkSoft),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+                    const SizedBox(height: 10),
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: palette.ink,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      style: TextStyle(fontSize: 11, color: palette.inkSoft),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

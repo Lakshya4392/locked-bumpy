@@ -37,13 +37,13 @@ class AppPalette extends ThemeExtension<AppPalette> {
     required this.isHalloween,
   });
 
-  /// Warm pastel oat-cream & crisp white card palette (Everyday Nursery).
+  /// Luminous warm off-white & crisp white card palette (Everyday Nursery).
   static const everyday = AppPalette(
-    skyTop: Color(0xFFF6F4EF),
-    skyBottom: Color(0xFFEDE9E0),
+    skyTop: Color(0xFFFAF9F6),
+    skyBottom: Color(0xFFF2F0EA),
     hill: Color(0xFFDAD3C5),
     paper: Color(0xFFFFFFFF),
-    paperRaised: Color(0xFFF5F1EA),
+    paperRaised: Color(0xFFF5F3EE),
     ink: Color(0xFF1F1926),
     inkSoft: Color(0xFF625A6D),
     moonlight: Color(0xFF1F1926),

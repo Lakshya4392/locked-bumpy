@@ -20,6 +20,20 @@ class ClosetSheet extends StatelessWidget {
     );
   }
 
+  String _outfitTitle(MaternalNeed need, AppPalette palette) {
+    if (palette.isHalloween) {
+      return need.costume[0] + need.costume.substring(1).toLowerCase();
+    }
+    return switch (need) {
+      MaternalNeed.iron => 'Sailor',
+      MaternalNeed.brain => 'Story',
+      MaternalNeed.bones => 'Cozy',
+      MaternalNeed.water => 'Petal',
+      MaternalNeed.rest => 'Snuggle',
+      MaternalNeed.vitamin => 'Clap',
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final palette = AppPalette.of(context);
@@ -55,7 +69,9 @@ class ClosetSheet extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Costume Closet',
+                        palette.isHalloween
+                            ? 'Costume Closet'
+                            : 'Outfit Closet',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -96,9 +112,7 @@ class ClosetSheet extends StatelessWidget {
                     childAspectRatio: 0.82,
                     children: MaternalNeed.values.map((need) {
                       final isSelected = activeCostume == need;
-                      final costumeTitle =
-                          need.costume[0] +
-                          need.costume.substring(1).toLowerCase();
+                      final costumeTitle = _outfitTitle(need, palette);
                       return Semantics(
                         label: '$costumeTitle costume for ${need.needName}',
                         selected: isSelected,
