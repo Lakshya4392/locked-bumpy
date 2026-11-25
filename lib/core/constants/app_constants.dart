@@ -22,6 +22,12 @@ class AppConstants {
   static const int maxWeek = 42;
   static const int fullTermDays = 280; // LMP + 280 days = due date
 
+  // ── App metadata & privacy ──────────────────────────────────────────────
+  static const String appVersion = '1.0.0';
+  static const String privacyStatement =
+      'Everything stays on your device. No accounts, no servers, '
+      'no analytics, and zero network calls.';
+
   // ── Medical disclaimer ──────────────────────────────────────────────────
   static const String disclaimer =
       'This app is not medical advice. '

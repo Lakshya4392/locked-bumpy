@@ -65,3 +65,13 @@
 - **Hooks post-audit:** `dart-check` ✅ 0 issues. `content-check` ✅ 3/3 pass.
 - **Tests unchanged:** 26 passed, 0 failed.
 - **Next session goal:** Execute all Rung 2 tasks (ContentRecord, JSON packs, ThisWeekScreen, Pause Start Fresh/Erase).
+
+## 2026-11-25 (Wed) - Rungs 3 & 4 Complete (Paper-Doll, Closet, Guides, Settings)
+- **Specs closed:** `baby-paper-doll`, `closet-sheet`, `guides`, `settings`.
+- **What was built:**
+  - `BabyAvatar` (`lib/presentation/widgets/baby_avatar.dart`) — renders real hand-drawn PNG costumes (`everyday.png`, `body-vampire.png`, `body-zombie.png`, `body-skeleton.png`, `body-mummy.png`, `body-ghost.png`, `body-witch.png`) with emoji fallback and `disableAnimations` support; wired into `TodayScreen` and `ThisWeekScreen`.
+  - `AppState.costumeOverride` + `ClosetSheet` (`lib/presentation/sheets/closet_sheet.dart`) — 2×3 costume try-on grid opened from the `TopBar` wardrobe icon in Halloween mode; never alters `todayNeed` or daily check-in state.
+  - `GuideArticle` + `assets/content/guide_articles.json` + `GuidesScreen` — 6 physician-authored maternal care guides (Iron, Brain, Bones, Water, Rest, Vitamin) with vegetarian/egg-free food ideas, doctor questions, and disclaimer footer.
+  - `SettingsScreen` (`lib/presentation/screens/settings_screen.dart`) — nickname edit, due date picker, mode toggle, `AppConstants.appVersion`, `AppConstants.privacyStatement`, medical disclaimer, and `Erase all data` confirmation.
+- **New tests:** `baby_avatar_test.dart`, `closet_sheet_test.dart`, `guides_screen_test.dart`, `settings_screen_test.dart` (plus dynamic `todayIso` fix in `pause_test.dart`).
+- **Credits used:** 0 (local spec-driven build following `.kiro/steering/` and `.kiro/specs/`).

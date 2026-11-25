@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../core/theme/palette.dart';
 import '../../domain/models/app_state.dart';
 import '../../domain/pregnancy.dart';
+import '../screens/settings_screen.dart';
+import '../sheets/closet_sheet.dart';
 
 /// App top bar: week chip, lamp toggle, pause button.
 class TopBar extends StatelessWidget implements PreferredSizeWidget {
@@ -46,6 +48,20 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
 
           Row(
             children: [
+              // Costume closet — visible only in Halloween mode
+              if (palette.isHalloween)
+                Semantics(
+                  label: 'Open costume closet',
+                  button: true,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.checkroom_outlined,
+                      color: palette.moonlight,
+                    ),
+                    onPressed: () => ClosetSheet.show(context, state),
+                    tooltip: 'Costume closet',
+                  ),
+                ),
               // Lamp toggle — switches Everyday ↔ Halloween
               Semantics(
                 label: state.isHalloween
@@ -76,6 +92,23 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                   onPressed: state.togglePause,
                   tooltip: 'Pause',
+                ),
+              ),
+              // Settings
+              Semantics(
+                label: 'Settings',
+                button: true,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.settings_outlined,
+                    color: palette.moonlightSoft,
+                  ),
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => SettingsScreen(state: state),
+                    ),
+                  ),
+                  tooltip: 'Settings',
                 ),
               ),
             ],

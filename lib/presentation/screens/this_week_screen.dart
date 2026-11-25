@@ -3,8 +3,10 @@ import 'package:flutter/services.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/palette.dart';
 import '../../domain/models/app_state.dart';
+import '../../domain/models/need.dart';
 import '../../domain/models/week_card.dart';
 import '../../domain/pregnancy.dart';
+import '../widgets/baby_avatar.dart';
 
 /// This Week tab — browse gestational weeks 4–42 with approved baby-voice cards.
 class ThisWeekScreen extends StatefulWidget {
@@ -86,6 +88,8 @@ class _ThisWeekScreenState extends State<ThisWeekScreen> {
                     week: _selectedWeek,
                     card: card,
                     palette: palette,
+                    avatarNeed:
+                        widget.state.costumeOverride ?? widget.state.todayNeed,
                     isCurrentWeek: _selectedWeek == _currentWeek(),
                   ),
                 ),
@@ -179,12 +183,14 @@ class _WeekCardView extends StatelessWidget {
     required this.week,
     required this.card,
     required this.palette,
+    required this.avatarNeed,
     required this.isCurrentWeek,
   });
 
   final int week;
   final WeekCard? card;
   final AppPalette palette;
+  final MaternalNeed avatarNeed;
   final bool isCurrentWeek;
 
   @override
@@ -209,17 +215,7 @@ class _WeekCardView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: palette.moon.withValues(alpha: 0.3),
-            ),
-            child: const Center(
-              child: Text('🌙', style: TextStyle(fontSize: 20)),
-            ),
-          ),
+          BabyAvatar(need: avatarNeed, size: 72),
           const SizedBox(height: 16),
           if (isCurrentWeek) ...[
             Container(

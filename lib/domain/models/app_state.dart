@@ -49,6 +49,17 @@ class AppState extends ChangeNotifier {
   bool _isHalloween;
   bool get isHalloween => _isHalloween;
 
+  MaternalNeed? _costumeOverride;
+
+  /// Optional Halloween costume try-on from ClosetSheet.
+  /// Null means wear today's need costume. Does not affect check-ins.
+  MaternalNeed? get costumeOverride => _costumeOverride;
+
+  void setCostumeOverride(MaternalNeed? need) {
+    _costumeOverride = need;
+    notifyListeners();
+  }
+
   Future<void> toggleMode() async {
     _isHalloween = !_isHalloween;
     notifyListeners();
@@ -124,6 +135,7 @@ class AppState extends ChangeNotifier {
     _nickname = '';
     _isHalloween = true;
     _isPaused = false;
+    _costumeOverride = null;
     _currentTab = 0;
     _completedCheckIns = {};
     notifyListeners();

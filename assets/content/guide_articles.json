@@ -1,0 +1,107 @@
+[
+  {
+    "id": "guide-iron",
+    "need": "IRON",
+    "title": "Iron & Energy",
+    "summary": "Plant-based iron pairs best with vitamin C.",
+    "body": "During pregnancy, your body works extra hard to carry oxygen for both you and your baby. Simple plant-based iron sources like lentils, chickpeas, and dark leafy greens are gentle ways to keep your energy steady. Pairing iron-rich meals with a squeeze of lemon or fresh fruit helps your body absorb it naturally.",
+    "food_ideas": [
+      "Warm red lentil dal with a squeeze of lemon",
+      "Roasted chickpeas or black bean bowls",
+      "Spinach with tomatoes or bell peppers",
+      "Pumpkin seeds as an afternoon snack"
+    ],
+    "questions_for_doctor": [
+      "What are my latest iron or hemoglobin levels?",
+      "Should I space my iron-rich foods or supplement away from tea, coffee, or calcium?"
+    ],
+    "status": "approved"
+  },
+  {
+    "id": "guide-brain",
+    "need": "BRAIN",
+    "title": "Folate & Choline",
+    "summary": "Everyday greens, beans, and whole grains.",
+    "body": "Folate and choline are quiet everyday helpers found in ordinary kitchen staples. Leafy greens, beans, and walnuts fit easily into warm meals without needing complicated recipes or strict tracking. Even small servings scattered across the week add up gently.",
+    "food_ideas": [
+      "Steamed broccoli or spinach in pasta or rice",
+      "Kidney beans, black beans, or edamame",
+      "A handful of walnuts or sunflower seeds",
+      "Fortified whole-grain toast or oatmeal"
+    ],
+    "questions_for_doctor": [
+      "Does my current prenatal vitamin cover my folate needs?",
+      "Are there any additional choline foods you recommend for my diet?"
+    ],
+    "status": "approved"
+  },
+  {
+    "id": "guide-bones",
+    "need": "BONES",
+    "title": "Calcium & Vitamin D",
+    "summary": "Dairy or fortified plant milks for strong support.",
+    "body": "Calcium helps support your bones and teeth while your baby grows. Plain yogurt, milk, paneer, tofu set with calcium, or fortified plant milks are easy ways to include it without stress. A few minutes of gentle morning sunlight also supports vitamin D.",
+    "food_ideas": [
+      "Plain yogurt with berries or sliced banana",
+      "Warm milk or fortified soy or oat milk",
+      "Calcium-set tofu or paneer stir-fry",
+      "Sesame seeds (tahini) drizzled on veggies"
+    ],
+    "questions_for_doctor": [
+      "Should we check my vitamin D level at my next visit?",
+      "If I avoid dairy, which fortified foods or supplements fit best?"
+    ],
+    "status": "approved"
+  },
+  {
+    "id": "guide-water",
+    "need": "WATER",
+    "title": "Hydration",
+    "summary": "Steady sips throughout the day.",
+    "body": "Keeping a glass or bottle of water nearby makes hydration effortless. You do not need to count ounces or force large amounts at once—gentle, regular sips through the day, along with hydrating fruits or warm soups, keep you comfortable.",
+    "food_ideas": [
+      "Plain water with a slice of cucumber, mint, or orange",
+      "Warm vegetable broth or clear soup",
+      "Watermelon, cucumber, or juicy oranges",
+      "Caffeine-free herbal infusions approved by your doctor"
+    ],
+    "questions_for_doctor": [
+      "Which herbal teas are safe for me during this trimester?",
+      "What signs of dehydration should I watch for in warm weather?"
+    ],
+    "status": "approved"
+  },
+  {
+    "id": "guide-rest",
+    "need": "REST",
+    "title": "Rest & Comfort",
+    "summary": "Short pauses count just as much as long naps.",
+    "body": "Growing a human takes quiet energy, even when you are sitting still. Resting does not have to mean a two-hour nap—putting your feet up for five minutes, closing your eyes, or leaning back with a pillow behind your lower back is meaningful care.",
+    "food_ideas": [
+      "A warm glass of milk or chamomile if approved",
+      "A light evening snack if hunger wakes you",
+      "Propping pillows under your knees or belly while resting"
+    ],
+    "questions_for_doctor": [
+      "What sleeping positions are most comfortable and safe as my pregnancy progresses?",
+      "When should I mention persistent fatigue or trouble sleeping?"
+    ],
+    "status": "approved"
+  },
+  {
+    "id": "guide-vitamin",
+    "need": "VITAMIN",
+    "title": "Prenatal Vitamin",
+    "summary": "Only the one your own doctor chose for you.",
+    "body": "Your prenatal vitamin is chosen specifically for you by your care team. Keeping it beside your toothbrush or water glass makes it easy to remember without pressure. If it ever upsets your stomach, ask your doctor about taking it with food or at a different time of day.",
+    "food_ideas": [
+      "Take alongside a light snack or meal if your stomach feels sensitive",
+      "Keep a small glass of water nearby at your usual time"
+    ],
+    "questions_for_doctor": [
+      "What time of day is best for taking my prescribed prenatal vitamin?",
+      "If my vitamin causes nausea, is there an alternative formulation I can switch to?"
+    ],
+    "status": "approved"
+  }
+]

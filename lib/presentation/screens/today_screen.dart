@@ -5,6 +5,7 @@ import '../../core/theme/palette.dart';
 import '../../domain/models/app_state.dart';
 import '../../domain/models/content_record.dart';
 import '../../domain/models/need.dart';
+import '../widgets/baby_avatar.dart';
 
 /// Today tab — daily loop under 30 seconds.
 /// Baby-voice lines are loaded from [ContentLoader] (bundled JSON, offline).
@@ -127,6 +128,7 @@ class _TodayScreenState extends State<TodayScreen>
     final palette = AppPalette.of(context);
     final state = widget.state;
     final need = state.todayNeed;
+    final avatarNeed = state.costumeOverride ?? need;
     final thirdNeed = state.thirdCheckIn;
     final needTicked = state.isChecked(AppConstants.checkInNeed);
     final allDone = state.allChecked;
@@ -177,7 +179,11 @@ class _TodayScreenState extends State<TodayScreen>
                 const SizedBox(height: 16),
 
                 // Baby avatar
-                _buildBabyAvatar(context, palette, need),
+                BabyAvatar(
+                  need: avatarNeed,
+                  size: 120,
+                  hopAnimation: _hopAnimation,
+                ),
                 const SizedBox(height: 14),
 
                 // Baby speech
@@ -283,51 +289,6 @@ class _TodayScreenState extends State<TodayScreen>
         ],
       ),
     );
-  }
-
-  Widget _buildBabyAvatar(
-    BuildContext context,
-    AppPalette palette,
-    MaternalNeed need,
-  ) {
-    final disableAnimations = MediaQuery.disableAnimationsOf(context);
-    final avatar = Container(
-      width: 90,
-      height: 90,
-      decoration: BoxDecoration(
-        color: palette.paperRaised,
-        shape: BoxShape.circle,
-      ),
-      child: Center(
-        child: Text(
-          _costumeEmoji(need, palette),
-          style: const TextStyle(fontSize: 44),
-        ),
-      ),
-    );
-
-    if (disableAnimations) return avatar;
-
-    return AnimatedBuilder(
-      animation: _hopAnimation,
-      builder: (_, child) => Transform.translate(
-        offset: Offset(0, _hopAnimation.value),
-        child: child,
-      ),
-      child: avatar,
-    );
-  }
-
-  String _costumeEmoji(MaternalNeed need, AppPalette palette) {
-    if (!palette.isHalloween) return '👶';
-    return switch (need) {
-      MaternalNeed.iron => '🧛',
-      MaternalNeed.brain => '🧟',
-      MaternalNeed.bones => '💀',
-      MaternalNeed.water => '🧕',
-      MaternalNeed.rest => '👻',
-      MaternalNeed.vitamin => '🧙',
-    };
   }
 }
 
