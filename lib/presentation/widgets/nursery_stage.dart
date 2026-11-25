@@ -51,6 +51,17 @@ class NurseryStage extends StatelessWidget {
               ),
             ),
 
+            // Everyday generated pastel nursery window backdrop
+            if (!palette.isHalloween)
+              Positioned.fill(
+                child: Image.asset(
+                  'assets/images/stage/pastel-everyday-stage.jpg',
+                  fit: BoxFit.cover,
+                  gaplessPlayback: true,
+                  errorBuilder: (_, _, _) => const SizedBox.shrink(),
+                ),
+              ),
+
             // Halloween nursery texture overlay
             if (palette.isHalloween)
               Positioned.fill(
@@ -59,6 +70,7 @@ class NurseryStage extends StatelessWidget {
                   child: Image.asset(
                     'assets/images/stage/night-nursery-violet.png',
                     fit: BoxFit.cover,
+                    gaplessPlayback: true,
                     errorBuilder: (_, _, _) => const SizedBox.shrink(),
                   ),
                 ),

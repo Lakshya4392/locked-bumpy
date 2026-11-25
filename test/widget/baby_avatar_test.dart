@@ -17,7 +17,7 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        _wrap(const BabyAvatar(need: MaternalNeed.iron), AppPalette.everyday),
+        _wrap(const BabyAvatar(need: MaternalNeed.bones), AppPalette.everyday),
       );
       final images = tester.widgetList<Image>(find.byType(Image)).toList();
       final assets = images

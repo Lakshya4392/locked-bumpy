@@ -5,12 +5,13 @@ import '../../core/theme/palette.dart';
 import '../../domain/models/app_state.dart';
 import '../../domain/models/content_record.dart';
 import '../../domain/models/need.dart';
+import '../sheets/closet_sheet.dart';
 import '../widgets/need_icon_badge.dart';
 import '../widgets/nursery_stage.dart';
 import '../widgets/spring_tap.dart';
 
-/// Today tab — daily loop under 30 seconds.
-/// Baby-voice lines are loaded from [ContentLoader] (bundled JSON, offline).
+/// Today tab — warm illustrated nursery stage, speech bubble, quick outfit strip,
+/// featured Need of the Day card, and side-by-side Water / Vitamin bento tiles.
 class TodayScreen extends StatefulWidget {
   const TodayScreen({super.key, required this.state});
 
@@ -126,6 +127,20 @@ class _TodayScreenState extends State<TodayScreen>
     return 'calm';
   }
 
+  String _outfitLabel(MaternalNeed need, AppPalette palette) {
+    if (palette.isHalloween) {
+      return need.costume[0] + need.costume.substring(1).toLowerCase();
+    }
+    return switch (need) {
+      MaternalNeed.iron => 'Sailor',
+      MaternalNeed.brain => 'Story',
+      MaternalNeed.bones => 'Cozy',
+      MaternalNeed.water => 'Petal',
+      MaternalNeed.rest => 'Snuggle',
+      MaternalNeed.vitamin => 'Clap',
+    };
+  }
+
   // ── Build ─────────────────────────────────────────────────────────────────
 
   @override
@@ -136,17 +151,19 @@ class _TodayScreenState extends State<TodayScreen>
     final avatarNeed = state.costumeOverride ?? need;
     final thirdNeed = state.thirdCheckIn;
     final needTicked = state.isChecked(AppConstants.checkInNeed);
+    final waterTicked = state.isChecked(AppConstants.checkInWater);
+    final vitaminTicked = state.isChecked(AppConstants.checkInVitamin);
     final allDone = state.allChecked;
     final babyLine = _babyLine(need, needTicked, allDone, palette);
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // ── Illustrated Nursery Hero Card ───────────────────────────────
           Container(
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: palette.paper,
               borderRadius: BorderRadius.circular(28),
@@ -162,53 +179,70 @@ class _TodayScreenState extends State<TodayScreen>
             ),
             child: Column(
               children: [
-                NurseryStage(
-                  need: avatarNeed,
-                  tone: state.babyTone,
-                  expression: _babyExpression(needTicked, allDone),
-                  hopAnimation: _hopAnimation,
-                  showSparkle: needTicked || allDone,
-                  topLeftBadge: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 11,
-                      vertical: 5,
-                    ),
-                    decoration: BoxDecoration(
-                      color: palette.paper.withValues(alpha: 0.92),
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(
-                        color: need.color.withValues(alpha: 0.55),
-                        width: 1.5,
+                GestureDetector(
+                  onTap: palette.isHalloween
+                      ? () => ClosetSheet.show(context, state)
+                      : null,
+                  child: NurseryStage(
+                    need: avatarNeed,
+                    tone: state.babyTone,
+                    expression: _babyExpression(needTicked, allDone),
+                    hopAnimation: _hopAnimation,
+                    showSparkle: needTicked || allDone,
+                    height: 205,
+                    avatarSize: 162,
+                    topLeftBadge: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 11,
+                        vertical: 5,
                       ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 7,
-                          height: 7,
-                          decoration: BoxDecoration(
-                            color: need.color,
-                            shape: BoxShape.circle,
-                          ),
+                      decoration: BoxDecoration(
+                        color: palette.paper.withValues(alpha: 0.92),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: need.color.withValues(alpha: 0.55),
+                          width: 1.5,
                         ),
-                        const SizedBox(width: 6),
-                        Text(
-                          need.tag(palette),
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: palette.ink,
-                            letterSpacing: 0.5,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 7,
+                            height: 7,
+                            decoration: BoxDecoration(
+                              color: need.color,
+                              shape: BoxShape.circle,
+                            ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 6),
+                          Text(
+                            need.tag(palette),
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              color: palette.ink,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 14),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                const SizedBox(height: 12),
+
+                // Speech bubble
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color: palette.paperRaised,
+                    borderRadius: BorderRadius.circular(18),
+                  ),
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 240),
                     switchInCurve: Curves.easeOutCubic,
@@ -216,7 +250,7 @@ class _TodayScreenState extends State<TodayScreen>
                       babyLine,
                       key: ValueKey(babyLine),
                       style: TextStyle(
-                        fontSize: 17,
+                        fontSize: 16,
                         fontWeight: FontWeight.w600,
                         height: 1.35,
                         color: palette.ink,
@@ -225,11 +259,48 @@ class _TodayScreenState extends State<TodayScreen>
                     ),
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 10),
+
+                // Quick 6-outfit / costume strip (parity across both modes)
+                SizedBox(
+                  height: 34,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: MaternalNeed.values.length,
+                    separatorBuilder: (_, _) => const SizedBox(width: 6),
+                    itemBuilder: (_, i) {
+                      final m = MaternalNeed.values[i];
+                      final isSelected = avatarNeed == m;
+                      return ChoiceChip(
+                        label: Text(
+                          _outfitLabel(m, palette),
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: isSelected
+                                ? palette.accentText
+                                : palette.inkSoft,
+                          ),
+                        ),
+                        selected: isSelected,
+                        showCheckmark: false,
+                        selectedColor: palette.accent,
+                        backgroundColor: palette.paperRaised,
+                        side: BorderSide.none,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        onSelected: (_) =>
+                            state.setCostumeOverride(m == need ? null : m),
+                      );
+                    },
+                  ),
+                ),
               ],
             ),
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: 16),
 
           // ── Check-ins header ────────────────────────────────────────────
           Padding(
@@ -258,8 +329,8 @@ class _TodayScreenState extends State<TodayScreen>
           ),
           const SizedBox(height: 10),
 
-          // Check-in 1 — Need of the Day
-          _CheckInTile(
+          // Check-in 1 — Featured Need of the Day card
+          _FeaturedCheckInCard(
             title: '${need.needName} · Need of the Day',
             subtitle: need.foodHint,
             need: need,
@@ -269,55 +340,40 @@ class _TodayScreenState extends State<TodayScreen>
           ),
           const SizedBox(height: 10),
 
-          // Check-in 2 — Water
-          _CheckInTile(
-            title: 'Water',
-            subtitle: MaternalNeed.water.foodHint,
-            need: MaternalNeed.water,
-            isTicked: state.isChecked(AppConstants.checkInWater),
-            palette: palette,
-            onTap: () => _onCheckIn(AppConstants.checkInWater),
-          ),
-          const SizedBox(height: 10),
-
-          // Check-in 3 — Vitamin OR Rest
-          _CheckInTile(
-            title: thirdNeed == MaternalNeed.rest ? 'Rest' : 'Prenatal Vitamin',
-            subtitle: thirdNeed == MaternalNeed.rest
-                ? MaternalNeed.rest.foodHint
-                : MaternalNeed.vitamin.foodHint,
-            need: thirdNeed == MaternalNeed.rest
-                ? MaternalNeed.rest
-                : MaternalNeed.vitamin,
-            isTicked: state.isChecked(AppConstants.checkInVitamin),
-            palette: palette,
-            onTap: () => _onCheckIn(AppConstants.checkInVitamin),
-          ),
-
-          if (allDone) ...[
-            const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                color: palette.accent.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(
-                  color: palette.accent.withValues(alpha: 0.35),
+          // Check-ins 2 & 3 — Side-by-side Bento Tiles
+          Row(
+            children: [
+              Expanded(
+                child: _BentoCheckInTile(
+                  title: 'Water',
+                  subtitle: 'Refreshing glass',
+                  need: MaternalNeed.water,
+                  isTicked: waterTicked,
+                  palette: palette,
+                  onTap: () => _onCheckIn(AppConstants.checkInWater),
                 ),
               ),
-              child: Text(
-                babyLine,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: palette.ink,
+              const SizedBox(width: 10),
+              Expanded(
+                child: _BentoCheckInTile(
+                  title: thirdNeed == MaternalNeed.rest
+                      ? 'Rest'
+                      : 'Prenatal Vitamin',
+                  subtitle: thirdNeed == MaternalNeed.rest
+                      ? 'Feet up for five'
+                      : 'Doctor chosen',
+                  need: thirdNeed == MaternalNeed.rest
+                      ? MaternalNeed.rest
+                      : MaternalNeed.vitamin,
+                  isTicked: vitaminTicked,
+                  palette: palette,
+                  onTap: () => _onCheckIn(AppConstants.checkInVitamin),
                 ),
-                textAlign: TextAlign.center,
               ),
-            ),
-          ],
+            ],
+          ),
 
-          const SizedBox(height: 18),
+          const SizedBox(height: 16),
           Text(
             AppConstants.disclaimer,
             style: TextStyle(
@@ -334,10 +390,10 @@ class _TodayScreenState extends State<TodayScreen>
   }
 }
 
-// ── Reusable check-in tile ─────────────────────────────────────────────────
+// ── Featured Need of the Day Card ──────────────────────────────────────────
 
-class _CheckInTile extends StatelessWidget {
-  const _CheckInTile({
+class _FeaturedCheckInCard extends StatelessWidget {
+  const _FeaturedCheckInCard({
     required this.title,
     required this.subtitle,
     required this.need,
@@ -370,20 +426,23 @@ class _CheckInTile extends StatelessWidget {
             onTap: onTap,
             borderRadius: BorderRadius.circular(22),
             child: Container(
-              constraints: const BoxConstraints(minHeight: 68),
+              constraints: const BoxConstraints(minHeight: 72),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(22),
-                border: isTicked
-                    ? Border.all(
-                        color: need.color.withValues(alpha: 0.55),
-                        width: 1.5,
-                      )
-                    : null,
+                color: isTicked
+                    ? need.color.withValues(alpha: 0.09)
+                    : Colors.transparent,
+                border: Border.all(
+                  color: isTicked
+                      ? need.color.withValues(alpha: 0.6)
+                      : need.color.withValues(alpha: 0.2),
+                  width: 1.5,
+                ),
               ),
               child: Row(
                 children: [
-                  NeedIconBadge(need: need, size: 46, isCompleted: isTicked),
+                  NeedIconBadge(need: need, size: 48, isCompleted: isTicked),
                   const SizedBox(width: 14),
                   Expanded(
                     child: Column(
@@ -430,6 +489,120 @@ class _CheckInTile extends StatelessWidget {
                             color: palette.accentText,
                           )
                         : null,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Compact Bento Check-In Tile ────────────────────────────────────────────
+
+class _BentoCheckInTile extends StatelessWidget {
+  const _BentoCheckInTile({
+    required this.title,
+    required this.subtitle,
+    required this.need,
+    required this.isTicked,
+    required this.palette,
+    required this.onTap,
+  });
+
+  final String title;
+  final String subtitle;
+  final MaternalNeed need;
+  final bool isTicked;
+  final AppPalette palette;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: '$title check-in',
+      checked: isTicked,
+      button: true,
+      child: SpringTap(
+        onTap: onTap,
+        child: Material(
+          color: palette.paper,
+          borderRadius: BorderRadius.circular(22),
+          elevation: palette.isHalloween ? 2 : 0.5,
+          shadowColor: Colors.black.withValues(alpha: 0.08),
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(22),
+            child: Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(22),
+                color: isTicked
+                    ? need.color.withValues(alpha: 0.08)
+                    : Colors.transparent,
+                border: isTicked
+                    ? Border.all(
+                        color: need.color.withValues(alpha: 0.55),
+                        width: 1.5,
+                      )
+                    : null,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      NeedIconBadge(
+                        need: need,
+                        size: 40,
+                        isCompleted: isTicked,
+                      ),
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 220),
+                        width: 26,
+                        height: 26,
+                        decoration: BoxDecoration(
+                          color: isTicked
+                              ? palette.accent
+                              : palette.paperRaised,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: isTicked
+                                ? palette.accent
+                                : palette.inkSoft.withValues(alpha: 0.3),
+                            width: 1.5,
+                          ),
+                        ),
+                        child: isTicked
+                            ? Icon(
+                                Icons.check_rounded,
+                                size: 15,
+                                color: palette.accentText,
+                              )
+                            : null,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: palette.ink,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: TextStyle(fontSize: 11, color: palette.inkSoft),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),

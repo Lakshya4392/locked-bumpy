@@ -70,6 +70,11 @@ flutter:
     - assets/images/stage/
     - assets/images/bodies/everyday/
     - assets/images/bodies/hello/
+    - assets/images/bodies/sailor/
+    - assets/images/bodies/petal/
+    - assets/images/bodies/snuggle/
+    - assets/images/bodies/story/
+    - assets/images/bodies/clap/
     - assets/images/bodies/vampire/
     - assets/images/bodies/zombie/
     - assets/images/bodies/skeleton/

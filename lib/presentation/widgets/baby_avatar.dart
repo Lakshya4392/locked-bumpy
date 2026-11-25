@@ -30,7 +30,16 @@ class BabyAvatar extends StatefulWidget {
     String? poseOverride,
   }) {
     if (poseOverride != null) return poseOverride;
-    if (!isHalloween) return 'everyday';
+    if (!isHalloween) {
+      return switch (need) {
+        MaternalNeed.iron => 'sailor',
+        MaternalNeed.brain => 'story',
+        MaternalNeed.bones => 'everyday',
+        MaternalNeed.water => 'petal',
+        MaternalNeed.rest => 'snuggle',
+        MaternalNeed.vitamin => 'clap',
+      };
+    }
     return switch (need) {
       MaternalNeed.iron => 'vampire',
       MaternalNeed.brain => 'zombie',
