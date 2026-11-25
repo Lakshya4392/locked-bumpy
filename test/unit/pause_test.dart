@@ -2,6 +2,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:little_bumpy/domain/models/app_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+String _todayIso() {
+  final now = DateTime.now();
+  final y = now.year.toString().padLeft(4, '0');
+  final m = now.month.toString().padLeft(2, '0');
+  final d = now.day.toString().padLeft(2, '0');
+  return '$y-$m-$d';
+}
+
 void main() {
   group('Pause persistence', () {
     test('cold boot with is_paused=true loads in paused state', () async {
@@ -34,7 +42,7 @@ void main() {
       SharedPreferences.setMockInitialValues({
         'due_date_iso': '2027-05-10',
         'is_paused': true,
-        'checkin_date': '2026-11-23',
+        'checkin_date': _todayIso(),
         'checkin_ids': 'need_of_the_day,water',
       });
       final state = await AppState.load();
@@ -57,7 +65,7 @@ void main() {
         'is_paused': true,
         'baby_nickname': 'Peanut',
         'checkin_ids': 'water',
-        'checkin_date': '2026-11-23',
+        'checkin_date': _todayIso(),
       });
       final state = await AppState.load();
       expect(state.isFirstRun, isFalse);

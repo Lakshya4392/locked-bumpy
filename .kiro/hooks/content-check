@@ -2,4 +2,6 @@
 # .kiro/hooks/content-check
 set -e
 echo "Running Little Bumpy Content Gate..."
-flutter test test/unit/content_gate_test.dart
+# Runs gate tests AND real JSON pack validation (content_gate_test loads
+# assets/content/today_lines.json via rootBundle and validates every record).
+flutter test test/unit/content_gate_test.dart test/unit/week_coverage_test.dart
