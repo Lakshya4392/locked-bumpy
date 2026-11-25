@@ -29,7 +29,16 @@ class BabyAvatar extends StatefulWidget {
     required bool isHalloween,
     required MaternalNeed need,
   }) {
-    if (!isHalloween) return 'assets/images/pastel-everyday-baby.png';
+    if (!isHalloween) {
+      return switch (need) {
+        MaternalNeed.iron => 'assets/images/pastel-sailor-baby.png',
+        MaternalNeed.brain => 'assets/images/pastel-story-baby.png',
+        MaternalNeed.bones => 'assets/images/pastel-everyday-baby.png',
+        MaternalNeed.water => 'assets/images/pastel-petal-baby.png',
+        MaternalNeed.rest => 'assets/images/pastel-snuggle-baby.png',
+        MaternalNeed.vitamin => 'assets/images/pastel-clap-baby.png',
+      };
+    }
     return switch (need) {
       MaternalNeed.iron => 'assets/images/pastel-vampire-baby.png',
       MaternalNeed.brain => 'assets/images/pastel-zombie-baby.png',

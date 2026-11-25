@@ -24,6 +24,11 @@ All graphical assets, fonts, and illustrations used in Little Bumpy are tracked 
 | `assets/images/stage/pastel-everyday-stage.jpg` | Team-generated pastel nursery window backdrop | Team Generated (per 2026-11-22 ruling) | 2026-11-25 |
 | `assets/images/stage/pastel-halloween-stage.jpg` | Team-generated Halloween twilight nursery backdrop | Team Generated (per 2026-11-22 ruling) | 2026-11-25 |
 | `assets/images/pastel-everyday-baby.png` | Team-generated soft pastel gouache baby | Team Generated (per 2026-11-22 ruling) | 2026-11-25 |
+| `assets/images/pastel-sailor-baby.png` | Team-generated soft pastel Sailor baby | Team Generated (per 2026-11-22 ruling) | 2026-11-25 |
+| `assets/images/pastel-story-baby.png` | Team-generated soft pastel Story baby | Team Generated (per 2026-11-22 ruling) | 2026-11-25 |
+| `assets/images/pastel-petal-baby.png` | Team-generated soft pastel Petal baby | Team Generated (per 2026-11-22 ruling) | 2026-11-25 |
+| `assets/images/pastel-snuggle-baby.png` | Team-generated soft pastel Snuggle baby | Team Generated (per 2026-11-22 ruling) | 2026-11-25 |
+| `assets/images/pastel-clap-baby.png` | Team-generated soft pastel Clap baby | Team Generated (per 2026-11-22 ruling) | 2026-11-25 |
 | `assets/images/pastel-ghost-baby.png` | Team-generated soft pastel gouache Ghost baby | Team Generated (per 2026-11-22 ruling) | 2026-11-25 |
 | `assets/images/pastel-vampire-baby.png` | Team-generated soft pastel gouache Vampire baby | Team Generated (per 2026-11-22 ruling) | 2026-11-25 |
 | `assets/images/pastel-witch-baby.png` | Team-generated soft pastel gouache Witch baby | Team Generated (per 2026-11-22 ruling) | 2026-11-25 |
