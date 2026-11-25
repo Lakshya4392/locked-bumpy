@@ -145,97 +145,109 @@ class _TodayScreenState extends State<TodayScreen>
     final babyLine = _babyLine(need, needTicked, allDone, palette);
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 6, 16, 12),
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // ── Full-Bleed Nursery Hero Card ────────────────────────────────
+          // ── Separate Open Nursery Stage + Bumpy (no outer white box) ────
           Container(
             decoration: BoxDecoration(
-              color: palette.paper,
               borderRadius: BorderRadius.circular(28),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(
-                    alpha: palette.isHalloween ? 0.32 : 0.05,
+                    alpha: palette.isHalloween ? 0.34 : 0.06,
                   ),
-                  blurRadius: 22,
-                  offset: const Offset(0, 8),
+                  blurRadius: 24,
+                  offset: const Offset(0, 10),
                 ),
               ],
             ),
-            child: Column(
-              children: [
-                GestureDetector(
-                  onTap: () => ClosetSheet.show(context, state),
-                  child: NurseryStage(
-                    need: avatarNeed,
-                    tone: state.babyTone,
-                    expression: _babyExpression(needTicked, allDone),
-                    hopAnimation: _hopAnimation,
-                    showSparkle: needTicked || allDone,
-                    height: 256,
-                    avatarSize: 202,
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(28),
-                    ),
-                    topLeftBadge: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 11,
-                        vertical: 5,
+            child: GestureDetector(
+              onTap: () => ClosetSheet.show(context, state),
+              child: NurseryStage(
+                need: avatarNeed,
+                tone: state.babyTone,
+                expression: _babyExpression(needTicked, allDone),
+                hopAnimation: _hopAnimation,
+                showSparkle: needTicked || allDone,
+                height: 266,
+                avatarSize: 214,
+                borderRadius: BorderRadius.circular(28),
+                topLeftBadge: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 11,
+                    vertical: 5,
+                  ),
+                  decoration: BoxDecoration(
+                    color: palette.paper.withValues(alpha: 0.92),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 7,
+                        height: 7,
+                        decoration: BoxDecoration(
+                          color: need.color,
+                          shape: BoxShape.circle,
+                        ),
                       ),
-                      decoration: BoxDecoration(
-                        color: palette.paper.withValues(alpha: 0.92),
-                        borderRadius: BorderRadius.circular(14),
+                      const SizedBox(width: 6),
+                      Text(
+                        need.tag(palette),
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: palette.ink,
+                          letterSpacing: 0.4,
+                        ),
                       ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: 7,
-                            height: 7,
-                            decoration: BoxDecoration(
-                              color: need.color,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            need.tag(palette),
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                              color: palette.ink,
-                              letterSpacing: 0.4,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(18, 14, 18, 16),
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 240),
-                    switchInCurve: Curves.easeOutCubic,
-                    child: Text(
-                      babyLine,
-                      key: ValueKey(babyLine),
-                      style: TextStyle(
-                        fontSize: 16.5,
-                        fontWeight: FontWeight.w600,
-                        height: 1.35,
-                        color: palette.ink,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 10),
+
+          // ── Separate Baby Speech Pill ───────────────────────────────────
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
+            decoration: BoxDecoration(
+              color: Color.alphaBlend(
+                need.color.withValues(alpha: palette.isHalloween ? 0.16 : 0.09),
+                palette.paper,
+              ),
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(
+                    alpha: palette.isHalloween ? 0.22 : 0.03,
+                  ),
+                  blurRadius: 12,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 240),
+              switchInCurve: Curves.easeOutCubic,
+              child: Text(
+                babyLine,
+                key: ValueKey(babyLine),
+                style: TextStyle(
+                  fontSize: 15.5,
+                  fontWeight: FontWeight.w600,
+                  height: 1.35,
+                  color: palette.ink,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+          const SizedBox(height: 14),
 
           // ── 3 Clean Borderless Row Check-In Cards ───────────────────────
           _CheckInRowCard(
@@ -296,12 +308,14 @@ class _CheckInRowCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = isTicked
-        ? Color.alphaBlend(
-            need.color.withValues(alpha: palette.isHalloween ? 0.16 : 0.08),
-            palette.paper,
-          )
-        : palette.paper;
+    final bgColor = Color.alphaBlend(
+      need.color.withValues(
+        alpha: isTicked
+            ? (palette.isHalloween ? 0.20 : 0.12)
+            : (palette.isHalloween ? 0.06 : 0.045),
+      ),
+      palette.paper,
+    );
 
     return Semantics(
       label: title,
