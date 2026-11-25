@@ -3,8 +3,9 @@ import '../../core/constants/app_constants.dart';
 import '../../core/theme/palette.dart';
 import '../../domain/models/need.dart';
 
-/// 5-layer studio paper-doll baby avatar with gentle breathing float,
-/// gapless PNG rendering, and smooth expression crossfades.
+/// Soft pastel gouache baby avatar with grounded breathing animation.
+/// Renders [pastel-everyday-baby.png] in Everyday mode and the 6 pastel
+/// Halloween costume PNGs in Halloween mode.
 class BabyAvatar extends StatefulWidget {
   const BabyAvatar({
     super.key,
@@ -23,73 +24,19 @@ class BabyAvatar extends StatefulWidget {
   final double size;
   final Animation<double>? hopAnimation;
 
-  /// Resolves the pose folder name for [need] in the given mode.
-  static String poseFor({
-    required bool isHalloween,
-    required MaternalNeed need,
-    String? poseOverride,
-  }) {
-    if (poseOverride != null) return poseOverride;
-    if (!isHalloween) {
-      return switch (need) {
-        MaternalNeed.iron => 'sailor',
-        MaternalNeed.brain => 'story',
-        MaternalNeed.bones => 'everyday',
-        MaternalNeed.water => 'petal',
-        MaternalNeed.rest => 'snuggle',
-        MaternalNeed.vitamin => 'clap',
-      };
-    }
-    return switch (need) {
-      MaternalNeed.iron => 'vampire',
-      MaternalNeed.brain => 'zombie',
-      MaternalNeed.bones => 'skeleton',
-      MaternalNeed.water => 'mummy',
-      MaternalNeed.rest => 'ghost',
-      MaternalNeed.vitamin => 'witch',
-    };
-  }
-
-  /// Resolves the body PNG path (primary layer for tests & fallback).
+  /// Resolves the pastel PNG asset path for [need] in the given mode.
   static String assetPathFor({
     required bool isHalloween,
     required MaternalNeed need,
-    String tone = AppConstants.defaultBabyTone,
-    String? poseOverride,
   }) {
-    final pose = poseFor(
-      isHalloween: isHalloween,
-      need: need,
-      poseOverride: poseOverride,
-    );
-    return 'assets/images/bodies/$pose/$tone.png';
-  }
-
-  static String? backExtraFor({
-    required bool isHalloween,
-    required MaternalNeed need,
-    String? poseOverride,
-  }) {
-    if (!isHalloween || poseOverride != null) return null;
+    if (!isHalloween) return 'assets/images/pastel-everyday-baby.png';
     return switch (need) {
-      MaternalNeed.iron => 'assets/images/extras/vampire-collar.png',
-      MaternalNeed.rest => 'assets/images/extras/ghost-cowl.png',
-      MaternalNeed.water => 'assets/images/extras/mummy-streamer.png',
-      _ => null,
-    };
-  }
-
-  static String? frontExtraFor({
-    required bool isHalloween,
-    required MaternalNeed need,
-    String? poseOverride,
-  }) {
-    if (!isHalloween || poseOverride != null) return null;
-    return switch (need) {
-      MaternalNeed.vitamin => 'assets/images/extras/witch-hat.png',
-      MaternalNeed.bones => 'assets/images/extras/bone-bow.png',
-      MaternalNeed.brain => 'assets/images/extras/zombie-cap.png',
-      _ => null,
+      MaternalNeed.iron => 'assets/images/pastel-vampire-baby.png',
+      MaternalNeed.brain => 'assets/images/pastel-zombie-baby.png',
+      MaternalNeed.bones => 'assets/images/pastel-skeleton-baby.png',
+      MaternalNeed.water => 'assets/images/pastel-mummy-baby.png',
+      MaternalNeed.rest => 'assets/images/pastel-ghost-baby.png',
+      MaternalNeed.vitamin => 'assets/images/pastel-witch-baby.png',
     };
   }
 
@@ -100,7 +47,7 @@ class BabyAvatar extends StatefulWidget {
 class _BabyAvatarState extends State<BabyAvatar>
     with SingleTickerProviderStateMixin {
   late final AnimationController _breatheController;
-  late final Animation<double> _breatheOffset;
+  late final Animation<double> _breatheScale;
 
   @override
   void initState() {
@@ -109,7 +56,7 @@ class _BabyAvatarState extends State<BabyAvatar>
       vsync: this,
       duration: const Duration(milliseconds: 2600),
     )..repeat(reverse: true);
-    _breatheOffset = Tween<double>(begin: 1.0, end: 1.018).animate(
+    _breatheScale = Tween<double>(begin: 1.0, end: 1.018).animate(
       CurvedAnimation(parent: _breatheController, curve: Curves.easeInOutSine),
     );
   }
@@ -129,86 +76,40 @@ class _BabyAvatarState extends State<BabyAvatar>
     } else if (!disableAnimations && !_breatheController.isAnimating) {
       _breatheController.repeat(reverse: true);
     }
-    final safeTone = AppConstants.babyTones.contains(widget.tone)
-        ? widget.tone
-        : AppConstants.defaultBabyTone;
 
-    final bodyPath = BabyAvatar.assetPathFor(
+    final assetPath = BabyAvatar.assetPathFor(
       isHalloween: palette.isHalloween,
       need: widget.need,
-      tone: safeTone,
-      poseOverride: widget.poseOverride,
     );
-    final backExtra = BabyAvatar.backExtraFor(
-      isHalloween: palette.isHalloween,
-      need: widget.need,
-      poseOverride: widget.poseOverride,
-    );
-    final headPath = 'assets/images/heads/$safeTone.png';
-    final expressionPath = 'assets/images/expressions/${widget.expression}.png';
-    final frontExtra = BabyAvatar.frontExtraFor(
-      isHalloween: palette.isHalloween,
-      need: widget.need,
-      poseOverride: widget.poseOverride,
-    );
-
-    Widget layer(String path, {Key? key, bool withFallback = false}) {
-      return Image.asset(
-        path,
-        key: key,
-        width: widget.size,
-        height: widget.size,
-        fit: BoxFit.contain,
-        gaplessPlayback: true,
-        errorBuilder: (_, _, _) => withFallback
-            ? Center(
-                child: Text(
-                  palette.isHalloween ? '🎃' : '👶',
-                  style: TextStyle(fontSize: widget.size * 0.4),
-                ),
-              )
-            : const SizedBox.shrink(),
-      );
-    }
-
-    final String? customPastelAsset;
-    if (!palette.isHalloween) {
-      customPastelAsset = 'assets/images/pastel-everyday-baby.png';
-    } else {
-      customPastelAsset = switch (widget.need) {
-        MaternalNeed.bones => 'assets/images/pastel-skeleton-baby.png',
-        MaternalNeed.rest => 'assets/images/pastel-ghost-baby.png',
-        _ => null,
-      };
-    }
 
     final doll = SizedBox(
       width: widget.size,
       height: widget.size,
-      child: customPastelAsset != null
-          ? layer(customPastelAsset, withFallback: true)
-          : Stack(
-              alignment: Alignment.center,
-              children: [
-                layer(bodyPath, withFallback: true),
-                if (backExtra != null) layer(backExtra),
-                layer(headPath),
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 260),
-                  switchInCurve: Curves.easeOutCubic,
-                  switchOutCurve: Curves.easeInCubic,
-                  child: layer(expressionPath, key: ValueKey(expressionPath)),
-                ),
-                if (frontExtra != null) layer(frontExtra),
-              ],
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 260),
+        switchInCurve: Curves.easeOutCubic,
+        child: Image.asset(
+          assetPath,
+          key: ValueKey(assetPath),
+          width: widget.size,
+          height: widget.size,
+          fit: BoxFit.contain,
+          gaplessPlayback: true,
+          errorBuilder: (_, _, _) => Center(
+            child: Text(
+              palette.isHalloween ? '🎃' : '👶',
+              style: TextStyle(fontSize: widget.size * 0.4),
             ),
+          ),
+        ),
+      ),
     );
 
     if (disableAnimations) return doll;
 
     return AnimatedBuilder(
       animation: Listenable.merge([
-        _breatheOffset,
+        _breatheScale,
         if (widget.hopAnimation != null) widget.hopAnimation!,
       ]),
       builder: (_, child) {
@@ -216,7 +117,7 @@ class _BabyAvatarState extends State<BabyAvatar>
         return Transform.translate(
           offset: Offset(0, hop),
           child: Transform.scale(
-            scale: _breatheOffset.value,
+            scale: _breatheScale.value,
             alignment: Alignment.bottomCenter,
             child: child,
           ),

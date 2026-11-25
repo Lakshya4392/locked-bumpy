@@ -25,15 +25,15 @@ void main() {
     });
 
     testWidgets(
-      'renders costume body + head + face for each need in Halloween mode',
+      'renders soft pastel costume PNG for each need in Halloween mode',
       (tester) async {
         final expected = {
-          MaternalNeed.iron: 'assets/images/bodies/vampire/fair.png',
-          MaternalNeed.brain: 'assets/images/bodies/zombie/fair.png',
+          MaternalNeed.iron: 'assets/images/pastel-vampire-baby.png',
+          MaternalNeed.brain: 'assets/images/pastel-zombie-baby.png',
           MaternalNeed.bones: 'assets/images/pastel-skeleton-baby.png',
-          MaternalNeed.water: 'assets/images/bodies/mummy/fair.png',
+          MaternalNeed.water: 'assets/images/pastel-mummy-baby.png',
           MaternalNeed.rest: 'assets/images/pastel-ghost-baby.png',
-          MaternalNeed.vitamin: 'assets/images/bodies/witch/fair.png',
+          MaternalNeed.vitamin: 'assets/images/pastel-witch-baby.png',
         };
 
         for (final entry in expected.entries) {

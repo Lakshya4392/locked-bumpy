@@ -63,24 +63,8 @@ flutter:
   # Assets configuration
   assets:
     - assets/images/
-    - assets/images/heads/
-    - assets/images/expressions/
-    - assets/images/extras/
     - assets/images/needs/
     - assets/images/stage/
-    - assets/images/bodies/everyday/
-    - assets/images/bodies/hello/
-    - assets/images/bodies/sailor/
-    - assets/images/bodies/petal/
-    - assets/images/bodies/snuggle/
-    - assets/images/bodies/story/
-    - assets/images/bodies/clap/
-    - assets/images/bodies/vampire/
-    - assets/images/bodies/zombie/
-    - assets/images/bodies/skeleton/
-    - assets/images/bodies/mummy/
-    - assets/images/bodies/witch/
-    - assets/images/bodies/ghost/
     - assets/content/
 
   # An image asset can refer to one or more resolution-specific "variants", see
