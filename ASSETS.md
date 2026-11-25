@@ -24,4 +24,6 @@ All graphical assets, fonts, and illustrations used in Little Bumpy are tracked 
 | `assets/images/stage/pastel-everyday-stage.jpg` | Team-generated pastel nursery window backdrop | Team Generated (per 2026-11-22 ruling) | 2026-11-25 |
 | `assets/images/stage/pastel-halloween-stage.jpg` | Team-generated Halloween twilight nursery backdrop | Team Generated (per 2026-11-22 ruling) | 2026-11-25 |
 | `assets/images/pastel-everyday-baby.png` | Team-generated soft pastel gouache baby | Team Generated (per 2026-11-22 ruling) | 2026-11-25 |
+| `assets/images/pastel-ghost-baby.png` | Team-generated soft pastel gouache Ghost baby | Team Generated (per 2026-11-22 ruling) | 2026-11-25 |
+| `assets/images/pastel-skeleton-baby.png` | Team-generated soft pastel gouache Skeleton baby | Team Generated (per 2026-11-22 ruling) | 2026-11-25 |
 

@@ -171,14 +171,24 @@ class _BabyAvatarState extends State<BabyAvatar>
       );
     }
 
-    final useSoftPastelEveryday =
-        !palette.isHalloween && widget.poseOverride == null;
+    final String? customPastelAsset;
+    if (!palette.isHalloween && widget.poseOverride == null) {
+      customPastelAsset = 'assets/images/pastel-everyday-baby.png';
+    } else if (palette.isHalloween && widget.poseOverride == null) {
+      customPastelAsset = switch (widget.need) {
+        MaternalNeed.bones => 'assets/images/pastel-skeleton-baby.png',
+        MaternalNeed.rest => 'assets/images/pastel-ghost-baby.png',
+        _ => null,
+      };
+    } else {
+      customPastelAsset = null;
+    }
 
     final doll = SizedBox(
       width: widget.size,
       height: widget.size,
-      child: useSoftPastelEveryday
-          ? layer('assets/images/pastel-everyday-baby.png', withFallback: true)
+      child: customPastelAsset != null
+          ? layer(customPastelAsset, withFallback: true)
           : Stack(
               alignment: Alignment.center,
               children: [

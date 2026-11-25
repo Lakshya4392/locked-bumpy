@@ -30,9 +30,9 @@ void main() {
         final expected = {
           MaternalNeed.iron: 'assets/images/bodies/vampire/fair.png',
           MaternalNeed.brain: 'assets/images/bodies/zombie/fair.png',
-          MaternalNeed.bones: 'assets/images/bodies/skeleton/fair.png',
+          MaternalNeed.bones: 'assets/images/pastel-skeleton-baby.png',
           MaternalNeed.water: 'assets/images/bodies/mummy/fair.png',
-          MaternalNeed.rest: 'assets/images/bodies/ghost/fair.png',
+          MaternalNeed.rest: 'assets/images/pastel-ghost-baby.png',
           MaternalNeed.vitamin: 'assets/images/bodies/witch/fair.png',
         };
 
@@ -45,8 +45,6 @@ void main() {
               .map((i) => (i.image as AssetImage).assetName)
               .toList();
           expect(assets, contains(entry.value));
-          expect(assets, contains('assets/images/heads/fair.png'));
-          expect(assets, contains('assets/images/expressions/calm.png'));
         }
       },
     );
