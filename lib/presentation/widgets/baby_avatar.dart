@@ -172,16 +172,14 @@ class _BabyAvatarState extends State<BabyAvatar>
     }
 
     final String? customPastelAsset;
-    if (!palette.isHalloween && widget.poseOverride == null) {
+    if (!palette.isHalloween) {
       customPastelAsset = 'assets/images/pastel-everyday-baby.png';
-    } else if (palette.isHalloween && widget.poseOverride == null) {
+    } else {
       customPastelAsset = switch (widget.need) {
         MaternalNeed.bones => 'assets/images/pastel-skeleton-baby.png',
         MaternalNeed.rest => 'assets/images/pastel-ghost-baby.png',
         _ => null,
       };
-    } else {
-      customPastelAsset = null;
     }
 
     final doll = SizedBox(

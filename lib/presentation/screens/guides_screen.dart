@@ -131,160 +131,168 @@ class _GuideCard extends StatelessWidget {
       label: '${article.title} guide',
       expanded: isExpanded,
       button: true,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: palette.paper,
-            borderRadius: BorderRadius.circular(20),
-            border: isExpanded
-                ? Border.all(
-                    color: needColor.withValues(alpha: 0.7),
-                    width: 1.5,
-                  )
-                : null,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.2),
-                offset: const Offset(0, 2),
-                blurRadius: 0,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(22),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(
+                alpha: palette.isHalloween ? 0.25 : 0.04,
               ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+              offset: const Offset(0, 4),
+              blurRadius: 16,
+            ),
+          ],
+        ),
+        child: Material(
+          color: isExpanded
+              ? Color.alphaBlend(
+                  needColor.withValues(
+                    alpha: palette.isHalloween ? 0.14 : 0.06,
+                  ),
+                  palette.paper,
+                )
+              : palette.paper,
+          borderRadius: BorderRadius.circular(22),
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(22),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  NeedIconBadge(
-                    need: article.maternalNeed,
-                    size: 44,
-                    isCompleted: isExpanded,
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          article.title,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: palette.ink,
-                          ),
-                        ),
-                        Text(
-                          article.summary,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: palette.inkSoft,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Icon(
-                    isExpanded
-                        ? Icons.keyboard_arrow_up
-                        : Icons.keyboard_arrow_down,
-                    color: palette.inkSoft,
-                  ),
-                ],
-              ),
-              if (isExpanded) ...[
-                const SizedBox(height: 14),
-                Divider(color: palette.inkSoft.withValues(alpha: 0.2)),
-                const SizedBox(height: 10),
-                Text(
-                  article.body,
-                  style: TextStyle(
-                    fontSize: 14,
-                    height: 1.5,
-                    color: palette.ink,
-                  ),
-                ),
-                if (article.foodIdeas.isNotEmpty) ...[
-                  const SizedBox(height: 14),
-                  Text(
-                    'Gentle ideas',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                      color: palette.ink,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  ...article.foodIdeas.map(
-                    (idea) => Padding(
-                      padding: const EdgeInsets.only(bottom: 4),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '• ',
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              color: palette.accent,
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              idea,
+                  Row(
+                    children: [
+                      NeedIconBadge(
+                        need: article.maternalNeed,
+                        size: 44,
+                        isCompleted: isExpanded,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              article.title,
                               style: TextStyle(
-                                fontSize: 13,
-                                color: palette.inkSoft,
-                                height: 1.35,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: palette.ink,
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-                if (article.questionsForDoctor.isNotEmpty) ...[
-                  const SizedBox(height: 14),
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: palette.paperRaised,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Questions for your doctor',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: palette.ink,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        ...article.questionsForDoctor.map(
-                          (q) => Padding(
-                            padding: const EdgeInsets.only(bottom: 4),
-                            child: Text(
-                              '— $q',
+                            Text(
+                              article.summary,
                               style: TextStyle(
                                 fontSize: 12,
                                 color: palette.inkSoft,
-                                height: 1.35,
                               ),
                             ),
+                          ],
+                        ),
+                      ),
+                      Icon(
+                        isExpanded
+                            ? Icons.keyboard_arrow_up
+                            : Icons.keyboard_arrow_down,
+                        color: palette.inkSoft,
+                      ),
+                    ],
+                  ),
+                  if (isExpanded) ...[
+                    const SizedBox(height: 14),
+                    Divider(color: palette.inkSoft.withValues(alpha: 0.2)),
+                    const SizedBox(height: 10),
+                    Text(
+                      article.body,
+                      style: TextStyle(
+                        fontSize: 14,
+                        height: 1.5,
+                        color: palette.ink,
+                      ),
+                    ),
+                    if (article.foodIdeas.isNotEmpty) ...[
+                      const SizedBox(height: 14),
+                      Text(
+                        'Gentle ideas',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: palette.ink,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      ...article.foodIdeas.map(
+                        (idea) => Padding(
+                          padding: const EdgeInsets.only(bottom: 4),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '• ',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                  color: palette.accent,
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  idea,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: palette.inkSoft,
+                                    height: 1.35,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
+                      ),
+                    ],
+                    if (article.questionsForDoctor.isNotEmpty) ...[
+                      const SizedBox(height: 14),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: palette.paperRaised,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Questions for your doctor',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: palette.ink,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            ...article.questionsForDoctor.map(
+                              (q) => Padding(
+                                padding: const EdgeInsets.only(bottom: 4),
+                                child: Text(
+                                  '— $q',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: palette.inkSoft,
+                                    height: 1.35,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ],
                 ],
-              ],
-            ],
+              ),
+            ),
           ),
         ),
       ),

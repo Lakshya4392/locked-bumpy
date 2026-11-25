@@ -67,69 +67,72 @@ class _ThisWeekScreenState extends State<ThisWeekScreen> {
       children: [
         const SizedBox(height: 16),
 
-        // Week dot strip
-        _WeekDots(
-          selected: _selectedWeek,
-          min: _minWeek,
-          max: _maxWeek,
-          current: _currentWeek(),
-          palette: palette,
-        ),
-        const SizedBox(height: 16),
-
-        // Card + arrows
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
+        // Sleek Week Scrubber Pill (Image 2 style)
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+            decoration: BoxDecoration(
+              color: palette.paper,
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(
+                    alpha: palette.isHalloween ? 0.25 : 0.04,
+                  ),
+                  blurRadius: 14,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 220),
-                    switchInCurve: Curves.easeOutCubic,
-                    child: _WeekCardView(
-                      key: ValueKey(_selectedWeek),
-                      week: _selectedWeek,
-                      card: card,
-                      palette: palette,
-                      tone: widget.state.babyTone,
-                      avatarNeed:
-                          widget.state.costumeOverride ??
-                          widget.state.todayNeed,
-                      isCurrentWeek: _selectedWeek == _currentWeek(),
-                    ),
+                _NavButton(
+                  icon: Icons.arrow_back_ios_new_rounded,
+                  label: 'Previous week',
+                  enabled: _selectedWeek > _minWeek,
+                  palette: palette,
+                  onTap: () => setState(() => _selectedWeek--),
+                ),
+                Text(
+                  'Week $_selectedWeek of 42',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w800,
+                    color: palette.ink,
                   ),
                 ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _NavButton(
-                      icon: Icons.arrow_back_ios_new,
-                      label: 'Previous week',
-                      enabled: _selectedWeek > _minWeek,
-                      palette: palette,
-                      onTap: () => setState(() => _selectedWeek--),
-                    ),
-                    Text(
-                      'Week $_selectedWeek',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: palette.moonlight,
-                      ),
-                    ),
-                    _NavButton(
-                      icon: Icons.arrow_forward_ios,
-                      label: 'Next week',
-                      enabled: _selectedWeek < _maxWeek,
-                      palette: palette,
-                      onTap: () => setState(() => _selectedWeek++),
-                    ),
-                  ],
+                _NavButton(
+                  icon: Icons.arrow_forward_ios_rounded,
+                  label: 'Next week',
+                  enabled: _selectedWeek < _maxWeek,
+                  palette: palette,
+                  onTap: () => setState(() => _selectedWeek++),
                 ),
-                const SizedBox(height: 20),
               ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 14),
+
+        // Full-bleed Week Card
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 220),
+              switchInCurve: Curves.easeOutCubic,
+              child: _WeekCardView(
+                key: ValueKey(_selectedWeek),
+                week: _selectedWeek,
+                card: card,
+                palette: palette,
+                tone: widget.state.babyTone,
+                avatarNeed:
+                    widget.state.costumeOverride ?? widget.state.todayNeed,
+                isCurrentWeek: _selectedWeek == _currentWeek(),
+              ),
             ),
           ),
         ),
@@ -139,51 +142,6 @@ class _ThisWeekScreenState extends State<ThisWeekScreen> {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-
-class _WeekDots extends StatelessWidget {
-  const _WeekDots({
-    required this.selected,
-    required this.min,
-    required this.max,
-    required this.current,
-    required this.palette,
-  });
-
-  final int selected;
-  final int min;
-  final int max;
-  final int current;
-  final AppPalette palette;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 10,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: List.generate(max - min + 1, (i) {
-          final week = min + i;
-          final isSelected = week == selected;
-          final isCurrent = week == current;
-          return AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            margin: const EdgeInsets.symmetric(horizontal: 1.5),
-            width: isSelected ? 10 : 5,
-            height: isSelected ? 10 : 5,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: isSelected
-                  ? palette.accent
-                  : isCurrent
-                  ? palette.moon.withValues(alpha: 0.6)
-                  : palette.moonlightSoft.withValues(alpha: 0.25),
-            ),
-          );
-        }),
-      ),
-    );
-  }
-}
 
 class _WeekCardView extends StatelessWidget {
   const _WeekCardView({
@@ -207,42 +165,40 @@ class _WeekCardView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: palette.paper,
         borderRadius: BorderRadius.circular(28),
-        border: isCurrentWeek
-            ? Border.all(color: palette.accent.withValues(alpha: 0.6), width: 2)
-            : null,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(
-              alpha: palette.isHalloween ? 0.3 : 0.06,
+              alpha: palette.isHalloween ? 0.3 : 0.05,
             ),
-            offset: const Offset(0, 6),
-            blurRadius: 18,
+            offset: const Offset(0, 8),
+            blurRadius: 22,
           ),
         ],
       ),
       child: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             NurseryStage(
               need: avatarNeed,
               tone: tone,
               expression: isCurrentWeek ? 'big-smile' : 'calm',
-              height: 152,
-              avatarSize: 122,
+              height: 215,
+              avatarSize: 174,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(28),
+              ),
               topLeftBadge: isCurrentWeek
                   ? Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
+                        horizontal: 11,
+                        vertical: 5,
                       ),
                       decoration: BoxDecoration(
                         color: palette.accent,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(14),
                       ),
                       child: Text(
                         'You are here',
@@ -255,38 +211,54 @@ class _WeekCardView extends StatelessWidget {
                     )
                   : null,
             ),
-            const SizedBox(height: 14),
-            Text(
-              'Week $week',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: palette.moon,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(22, 18, 22, 22),
+              child: Column(
+                children: [
+                  Text(
+                    'Week $week',
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w800,
+                      color: palette.ink,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    card?.babyLine ?? 'Week $week is on the way.',
+                    style: TextStyle(
+                      fontSize: 16.5,
+                      fontWeight: FontWeight.w600,
+                      height: 1.4,
+                      color: palette.ink,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  if (card?.sizeObject != null) ...[
+                    const SizedBox(height: 14),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 7,
+                      ),
+                      decoration: BoxDecoration(
+                        color: palette.paperRaised,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Text(
+                        'About the size of a ${card!.sizeObject}',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: palette.inkSoft,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
-            const SizedBox(height: 16),
-            Text(
-              card?.babyLine ?? 'Week $week is on the way.',
-              style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w600,
-                height: 1.4,
-                color: palette.ink,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            if (card?.sizeObject != null) ...[
-              const SizedBox(height: 12),
-              Text(
-                '📏 About the size of a ${card!.sizeObject}',
-                style: TextStyle(
-                  fontSize: 13,
-                  color: palette.inkSoft,
-                  fontStyle: FontStyle.italic,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
           ],
         ),
       ),
