@@ -13,35 +13,46 @@ Widget _wrap(Widget child, AppPalette palette) {
 
 void main() {
   group('BabyAvatar', () {
-    testWidgets('renders everyday.png in Everyday mode', (tester) async {
+    testWidgets('renders 5-layer everyday paper-doll in Everyday mode', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         _wrap(const BabyAvatar(need: MaternalNeed.iron), AppPalette.everyday),
       );
-      final image = tester.widget<Image>(find.byType(Image));
-      final provider = image.image as AssetImage;
-      expect(provider.assetName, equals('assets/images/everyday.png'));
+      final images = tester.widgetList<Image>(find.byType(Image)).toList();
+      final assets = images
+          .map((i) => (i.image as AssetImage).assetName)
+          .toList();
+      expect(assets, contains('assets/images/bodies/everyday/peach.png'));
+      expect(assets, contains('assets/images/heads/peach.png'));
+      expect(assets, contains('assets/images/expressions/calm.png'));
     });
 
-    testWidgets('renders costume PNG for each need in Halloween mode', (
-      tester,
-    ) async {
-      final expected = {
-        MaternalNeed.iron: 'assets/images/body-vampire.png',
-        MaternalNeed.brain: 'assets/images/body-zombie.png',
-        MaternalNeed.bones: 'assets/images/body-skeleton.png',
-        MaternalNeed.water: 'assets/images/body-mummy.png',
-        MaternalNeed.rest: 'assets/images/body-ghost.png',
-        MaternalNeed.vitamin: 'assets/images/body-witch.png',
-      };
+    testWidgets(
+      'renders costume body + head + face for each need in Halloween mode',
+      (tester) async {
+        final expected = {
+          MaternalNeed.iron: 'assets/images/bodies/vampire/peach.png',
+          MaternalNeed.brain: 'assets/images/bodies/zombie/peach.png',
+          MaternalNeed.bones: 'assets/images/bodies/skeleton/peach.png',
+          MaternalNeed.water: 'assets/images/bodies/mummy/peach.png',
+          MaternalNeed.rest: 'assets/images/bodies/ghost/peach.png',
+          MaternalNeed.vitamin: 'assets/images/bodies/witch/peach.png',
+        };
 
-      for (final entry in expected.entries) {
-        await tester.pumpWidget(
-          _wrap(BabyAvatar(need: entry.key), AppPalette.halloween),
-        );
-        final image = tester.widget<Image>(find.byType(Image));
-        final provider = image.image as AssetImage;
-        expect(provider.assetName, equals(entry.value));
-      }
-    });
+        for (final entry in expected.entries) {
+          await tester.pumpWidget(
+            _wrap(BabyAvatar(need: entry.key), AppPalette.halloween),
+          );
+          final images = tester.widgetList<Image>(find.byType(Image)).toList();
+          final assets = images
+              .map((i) => (i.image as AssetImage).assetName)
+              .toList();
+          expect(assets, contains(entry.value));
+          expect(assets, contains('assets/images/heads/peach.png'));
+          expect(assets, contains('assets/images/expressions/calm.png'));
+        }
+      },
+    );
   });
 }

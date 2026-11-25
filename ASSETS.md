@@ -15,4 +15,10 @@ All graphical assets, fonts, and illustrations used in Little Bumpy are tracked 
 | `assets/images/body-skeleton.png` | Studio paper-cut render (Bones) | Team Kit Studio Release | 2026-11-23 |
 | `assets/images/body-zombie.png` | Studio paper-cut render (Brain) | Team Kit Studio Release | 2026-11-23 |
 | `assets/images/nursery-lamp.png` | Studio paper-cut render (Lamp) | Team Kit Studio Release | 2026-11-23 |
+| `assets/images/heads/*.png` | Studio runtime heads (5 skin tones) | Team Kit Studio Release | 2026-11-25 |
+| `assets/images/expressions/*.png` | Studio runtime facial expressions | Team Kit Studio Release | 2026-11-25 |
+| `assets/images/extras/*.png` | Studio runtime costume & everyday extras | Team Kit Studio Release | 2026-11-25 |
+| `assets/images/bodies/{everyday,hello,vampire,zombie,skeleton,mummy,witch,ghost}/*.png` | Studio runtime 5-tone pose bodies | Team Kit Studio Release | 2026-11-25 |
+| `assets/images/needs/*.png` | Studio pieces need icons (6 needs) | Team Kit Studio Release | 2026-11-25 |
+| `assets/images/stage/*.png` | Studio pieces nursery backdrops & moon | Team Kit Studio Release | 2026-11-25 |
 

@@ -46,6 +46,13 @@ class PrefsService {
   Future<void> saveNickname(String value) =>
       _prefs.setString(AppConstants.prefsNicknameKey, value.trim());
 
+  String get babyTone =>
+      _prefs.getString(AppConstants.prefsBabyToneKey) ??
+      AppConstants.defaultBabyTone;
+
+  Future<void> saveBabyTone(String value) =>
+      _prefs.setString(AppConstants.prefsBabyToneKey, value);
+
   // ── Daily check-ins ──────────────────────────────────────────────────────
 
   /// Returns the saved check-in IDs for today; clears them if the saved date

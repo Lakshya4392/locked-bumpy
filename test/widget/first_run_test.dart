@@ -124,7 +124,7 @@ void main() {
       SharedPreferences.setMockInitialValues({});
       final state = await AppState.load();
       expect(state.nickname, equals(''));
-      expect(state.babyDisplayName, equals('Little Bumpy'));
+      expect(state.babyDisplayName, equals('Bumpy'));
     });
 
     test('saveNickname persists and updates babyDisplayName', () async {
@@ -146,7 +146,7 @@ void main() {
       SharedPreferences.setMockInitialValues({});
       final state = await AppState.load();
       await state.saveNickname('   ');
-      expect(state.babyDisplayName, equals('Little Bumpy'));
+      expect(state.babyDisplayName, equals('Bumpy'));
     });
   });
 }

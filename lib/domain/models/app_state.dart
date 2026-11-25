@@ -12,6 +12,7 @@ class AppState extends ChangeNotifier {
       _isHalloween = _prefs.isHalloween,
       _isPaused = _prefs.isPaused,
       _nickname = _prefs.nickname,
+      _babyTone = _prefs.babyTone,
       _completedCheckIns = _prefs.loadTodayCheckIns();
 
   final PrefsService _prefs;
@@ -35,13 +36,24 @@ class AppState extends ChangeNotifier {
   /// The name the mother chose for the baby. Empty string = no nickname set.
   String get nickname => _nickname;
 
-  /// Display name: nickname if set, otherwise 'Little Bumpy'.
-  String get babyDisplayName => _nickname.isEmpty ? 'Little Bumpy' : _nickname;
+  /// Display name: nickname if set, otherwise 'Bumpy'.
+  String get babyDisplayName => _nickname.isEmpty ? 'Bumpy' : _nickname;
 
   Future<void> saveNickname(String value) async {
     _nickname = value.trim();
     notifyListeners();
     await _prefs.saveNickname(_nickname);
+  }
+
+  // ── Baby Tone ────────────────────────────────────────────────────────────
+
+  String _babyTone;
+  String get babyTone => _babyTone;
+
+  Future<void> saveBabyTone(String value) async {
+    _babyTone = value;
+    notifyListeners();
+    await _prefs.saveBabyTone(value);
   }
 
   // ── Mode ─────────────────────────────────────────────────────────────────
@@ -133,6 +145,7 @@ class AppState extends ChangeNotifier {
   Future<void> eraseAll() async {
     _dueDate = null;
     _nickname = '';
+    _babyTone = AppConstants.defaultBabyTone;
     _isHalloween = true;
     _isPaused = false;
     _costumeOverride = null;

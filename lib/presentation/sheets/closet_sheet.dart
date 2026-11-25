@@ -127,8 +127,9 @@ class ClosetSheet extends StatelessWidget {
                                 Expanded(
                                   child: BabyAvatar(
                                     need: need,
-                                    size: 58,
-                                    showBackdrop: false,
+                                    tone: state.babyTone,
+                                    expression: 'big-smile',
+                                    size: 68,
                                   ),
                                 ),
                                 const SizedBox(height: 6),

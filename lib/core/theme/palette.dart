@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Design tokens for Little Bumpy (Storybook Night Nursery).
+/// Design tokens for Little Bumpy (Storybook Nursery — Pastel Everyday & Twilight Halloween).
 /// All color combinations guarantee >= 4.5:1 text contrast.
 class AppPalette extends ThemeExtension<AppPalette> {
   final Color skyTop;
@@ -37,46 +37,48 @@ class AppPalette extends ThemeExtension<AppPalette> {
     required this.isHalloween,
   });
 
+  /// Warm pastel oat-cream & crisp white card palette (Everyday Nursery).
   static const everyday = AppPalette(
-    skyTop: Color(0xFF3B2A4F),
-    skyBottom: Color(0xFF2E2040),
-    hill: Color(0xFF6E5585),
-    paper: Color(0xFFFBF3E6),
-    paperRaised: Color(0xFFF1E3CF),
-    ink: Color(0xFF2E2040),
-    inkSoft: Color(0xFF5E4D6E),
-    moonlight: Color(0xFFF6EEDF),
-    moonlightSoft: Color(0xFFCBBEDA),
-    moon: Color(0xFFF5E2B0),
-    accent: Color(0xFF9A3F6B),
-    accentText: Color(0xFFFFF8EE),
-    tabBar: Color(0xFFE8D9C4),
-    tabBarText: Color(0xFF2E2040),
+    skyTop: Color(0xFFF6F4EF),
+    skyBottom: Color(0xFFEDE9E0),
+    hill: Color(0xFFDAD3C5),
+    paper: Color(0xFFFFFFFF),
+    paperRaised: Color(0xFFF5F1EA),
+    ink: Color(0xFF1F1926),
+    inkSoft: Color(0xFF625A6D),
+    moonlight: Color(0xFF1F1926),
+    moonlightSoft: Color(0xFF625A6D),
+    moon: Color(0xFFE6A74E),
+    accent: Color(0xFF1E1A24),
+    accentText: Color(0xFFFFFBF4),
+    tabBar: Color(0xFFFFFFFF),
+    tabBarText: Color(0xFF1E1A24),
     isHalloween: false,
   );
 
+  /// Deep storybook twilight & velvet plum palette (Halloween Nursery).
   static const halloween = AppPalette(
-    skyTop: Color(0xFF1A1224),
-    skyBottom: Color(0xFF120C19),
+    skyTop: Color(0xFF1D152B),
+    skyBottom: Color(0xFF130E1D),
     hill: Color(0xFF3A2B52),
-    paper: Color(0xFF2A1F38),
-    paperRaised: Color(0xFF382A4B),
-    ink: Color(0xFFF3E9DA),
-    inkSoft: Color(0xFFC9B9D9),
-    moonlight: Color(0xFFF3E9DA),
-    moonlightSoft: Color(0xFFB6A6C8),
-    moon: Color(0xFFF0A45C), // Pumpkin moon
-    accent: Color(0xFFF0A45C),
+    paper: Color(0xFF2B203D),
+    paperRaised: Color(0xFF372A4D),
+    ink: Color(0xFFF6EFE4),
+    inkSoft: Color(0xFFCBBCD9),
+    moonlight: Color(0xFFF6EFE4),
+    moonlightSoft: Color(0xFFBAAAD0),
+    moon: Color(0xFFF2A45A), // Pumpkin moon
+    accent: Color(0xFFF2A45A),
     accentText: Color(0xFF1A1224),
-    tabBar: Color(0xFF120C19),
-    tabBarText: Color(0xFFF3E9DA),
+    tabBar: Color(0xFF231932),
+    tabBarText: Color(0xFFF6EFE4),
     isHalloween: true,
   );
 
   // Six Need Colors (identical across both modes)
-  static const needIron = Color(0xFFB8475E); // Leaf / vampire
-  static const needBrain = Color(0xFF6E9A5B); // Round brain / zombie
-  static const needBones = Color(0xFFE9E2D0); // Bone / skeleton
+  static const needIron = Color(0xFFC44D64); // Leaf / vampire
+  static const needBrain = Color(0xFF6E9A5B); // Brain / zombie
+  static const needBones = Color(0xFFD4C4A8); // Bone / skeleton
   static const needWater = Color(0xFF4F8FB8); // Water drop / mummy
   static const needRest = Color(0xFF9C8FD0); // Crescent moon / ghost
   static const needVitamin = Color(0xFFD9A23B); // Pill / witch

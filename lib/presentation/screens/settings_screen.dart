@@ -233,6 +233,57 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                               const SizedBox(height: 16),
                               Text(
+                                'Baby Tone',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                  color: palette.inkSoft,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children:
+                                    [
+                                      ('fair', const Color(0xFFF1C9A8)),
+                                      ('peach', const Color(0xFFFAB073)),
+                                      ('honey', const Color(0xFFDCA06D)),
+                                      ('deep', const Color(0xFF9B6142)),
+                                      ('deepest', const Color(0xFF844934)),
+                                    ].map((entry) {
+                                      final isSelected =
+                                          state.babyTone == entry.$1;
+                                      return Semantics(
+                                        label: 'Baby tone ${entry.$1}',
+                                        selected: isSelected,
+                                        button: true,
+                                        child: InkWell(
+                                          onTap: () =>
+                                              state.saveBabyTone(entry.$1),
+                                          customBorder: const CircleBorder(),
+                                          child: Container(
+                                            width: 36,
+                                            height: 36,
+                                            decoration: BoxDecoration(
+                                              color: entry.$2,
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                color: isSelected
+                                                    ? palette.accent
+                                                    : palette.ink.withValues(
+                                                        alpha: 0.2,
+                                                      ),
+                                                width: isSelected ? 3 : 1.5,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
                                 'Due Date',
                                 style: TextStyle(
                                   fontSize: 13,

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/palette.dart';
 import '../../domain/models/guide_article.dart';
+import '../widgets/need_icon_badge.dart';
 
 /// Guides tab — 6 physician-authored maternal care guides.
 /// Uses calm, plain-English app voice (no baby voice, no clinical doses).
@@ -152,14 +153,10 @@ class _GuideCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Container(
-                    width: 14,
-                    height: 14,
-                    decoration: BoxDecoration(
-                      color: needColor,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: palette.ink, width: 1.5),
-                    ),
+                  NeedIconBadge(
+                    need: article.maternalNeed,
+                    size: 44,
+                    isCompleted: isExpanded,
                   ),
                   const SizedBox(width: 12),
                   Expanded(

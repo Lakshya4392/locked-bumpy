@@ -3,7 +3,9 @@ import 'package:flutter/services.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/palette.dart';
 import '../../domain/models/app_state.dart';
+import '../../domain/models/need.dart';
 import '../../domain/pregnancy.dart';
+import '../widgets/nursery_stage.dart';
 
 /// First-run onboarding: 3 steps shown as a horizontal page flow.
 ///
@@ -259,18 +261,15 @@ class _Step1Date extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Moon mark
-          Center(
-            child: Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: palette.moon,
-              ),
-            ),
+          // Illustrated waving baby stage
+          const NurseryStage(
+            need: MaternalNeed.iron,
+            poseOverride: 'hello',
+            expression: 'big-smile',
+            height: 148,
+            avatarSize: 122,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 18),
 
           Text(
             'Hello, Little Bumpy.',

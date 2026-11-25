@@ -11,6 +11,17 @@ class AppConstants {
   /// Optional nickname the mother gives the baby. Empty string = not set.
   static const String prefsNicknameKey = 'baby_nickname';
 
+  /// Selected baby skin tone id (fair, peach, honey, deep, deepest).
+  static const String prefsBabyToneKey = 'baby_tone';
+  static const String defaultBabyTone = 'peach';
+  static const List<String> babyTones = [
+    'fair',
+    'peach',
+    'honey',
+    'deep',
+    'deepest',
+  ];
+
   /// ISO date string (yyyy-MM-dd) of the last day check-ins were saved.
   static const String prefsCheckInDateKey = 'checkin_date';
 
