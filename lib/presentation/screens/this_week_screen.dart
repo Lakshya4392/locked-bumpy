@@ -7,8 +7,10 @@ import '../../domain/models/need.dart';
 import '../../domain/models/week_card.dart';
 import '../../domain/pregnancy.dart';
 import '../widgets/nursery_stage.dart';
+import '../widgets/spring_tap.dart';
 
-/// This Week tab — browse gestational weeks 4–42 with approved baby-voice cards.
+/// This Week tab — browse gestational weeks 4–42 with swipe, scrubber pill,
+/// trimester progress bar, and full-bleed Nursery Stage.
 class ThisWeekScreen extends StatefulWidget {
   const ThisWeekScreen({super.key, required this.state});
 
@@ -19,6 +21,7 @@ class ThisWeekScreen extends StatefulWidget {
 }
 
 class _ThisWeekScreenState extends State<ThisWeekScreen> {
+  static List<WeekCard>? _cachedCards;
   List<WeekCard>? _cards;
   late int _selectedWeek;
 
@@ -29,7 +32,11 @@ class _ThisWeekScreenState extends State<ThisWeekScreen> {
   void initState() {
     super.initState();
     _selectedWeek = _currentWeek();
-    _loadCards();
+    if (_cachedCards != null) {
+      _cards = _cachedCards;
+    } else {
+      _loadCards();
+    }
   }
 
   int _currentWeek() {
@@ -42,8 +49,21 @@ class _ThisWeekScreenState extends State<ThisWeekScreen> {
 
   Future<void> _loadCards() async {
     final raw = await rootBundle.loadString('assets/content/week_cards.json');
-    if (mounted) {
-      setState(() => _cards = WeekCard.listFromJsonString(raw));
+    final loaded = WeekCard.listFromJsonString(raw);
+    _cachedCards = loaded;
+    if (mounted) setState(() => _cards = loaded);
+  }
+
+  String _trimesterLabel(int week) {
+    if (week <= 12) return '1st Trimester';
+    if (week <= 27) return '2nd Trimester';
+    return '3rd Trimester';
+  }
+
+  void _stepWeek(int delta) {
+    final next = (_selectedWeek + delta).clamp(_minWeek, _maxWeek);
+    if (next != _selectedWeek) {
+      setState(() => _selectedWeek = next);
     }
   }
 
@@ -53,7 +73,12 @@ class _ThisWeekScreenState extends State<ThisWeekScreen> {
     final cards = _cards;
 
     if (cards == null) {
-      return Center(child: CircularProgressIndicator(color: palette.accent));
+      return Center(
+        child: Text(
+          'Loading weeks...',
+          style: TextStyle(color: palette.moonlightSoft),
+        ),
+      );
     }
 
     final mode = palette.isHalloween ? 'halloween' : 'everyday';
@@ -62,16 +87,19 @@ class _ThisWeekScreenState extends State<ThisWeekScreen> {
       week: _selectedWeek,
       mode: mode,
     );
+    final currentWeek = _currentWeek();
+    final progress = ((_selectedWeek - _minWeek) / (_maxWeek - _minWeek)).clamp(
+      0.05,
+      1.0,
+    );
 
-    return Column(
-      children: [
-        const SizedBox(height: 16),
-
-        // Sleek Week Scrubber Pill (Image 2 style)
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 10),
+      child: Column(
+        children: [
+          // ── Week Scrubber Pill + Trimester Progress ─────────────────────
+          Container(
+            padding: const EdgeInsets.fromLTRB(10, 8, 10, 12),
             decoration: BoxDecoration(
               color: palette.paper,
               borderRadius: BorderRadius.circular(24),
@@ -80,63 +108,133 @@ class _ThisWeekScreenState extends State<ThisWeekScreen> {
                   color: Colors.black.withValues(
                     alpha: palette.isHalloween ? 0.25 : 0.04,
                   ),
-                  blurRadius: 14,
+                  blurRadius: 16,
                   offset: const Offset(0, 4),
                 ),
               ],
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Column(
               children: [
-                _NavButton(
-                  icon: Icons.arrow_back_ios_new_rounded,
-                  label: 'Previous week',
-                  enabled: _selectedWeek > _minWeek,
-                  palette: palette,
-                  onTap: () => setState(() => _selectedWeek--),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _NavButton(
+                      icon: Icons.arrow_back_ios_new_rounded,
+                      label: 'Previous week',
+                      enabled: _selectedWeek > _minWeek,
+                      palette: palette,
+                      onTap: () => _stepWeek(-1),
+                    ),
+                    Column(
+                      children: [
+                        Text(
+                          'Week $_selectedWeek of 42',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w800,
+                            color: palette.ink,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          _trimesterLabel(_selectedWeek),
+                          style: TextStyle(
+                            fontSize: 11.5,
+                            fontWeight: FontWeight.w600,
+                            color: palette.inkSoft,
+                          ),
+                        ),
+                      ],
+                    ),
+                    _NavButton(
+                      icon: Icons.arrow_forward_ios_rounded,
+                      label: 'Next week',
+                      enabled: _selectedWeek < _maxWeek,
+                      palette: palette,
+                      onTap: () => _stepWeek(1),
+                    ),
+                  ],
                 ),
-                Text(
-                  'Week $_selectedWeek of 42',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w800,
-                    color: palette.ink,
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: LinearProgressIndicator(
+                      value: progress,
+                      minHeight: 7,
+                      backgroundColor: palette.paperRaised,
+                      valueColor: AlwaysStoppedAnimation<Color>(palette.accent),
+                    ),
                   ),
-                ),
-                _NavButton(
-                  icon: Icons.arrow_forward_ios_rounded,
-                  label: 'Next week',
-                  enabled: _selectedWeek < _maxWeek,
-                  palette: palette,
-                  onTap: () => setState(() => _selectedWeek++),
                 ),
               ],
             ),
           ),
-        ),
-        const SizedBox(height: 14),
+          const SizedBox(height: 12),
 
-        // Full-bleed Week Card
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 220),
-              switchInCurve: Curves.easeOutCubic,
-              child: _WeekCardView(
-                key: ValueKey(_selectedWeek),
-                week: _selectedWeek,
-                card: card,
-                palette: palette,
-                tone: widget.state.babyTone,
-                avatarNeed:
-                    widget.state.costumeOverride ?? widget.state.todayNeed,
-                isCurrentWeek: _selectedWeek == _currentWeek(),
+          // ── Swipeable Full-Bleed Week Card ──────────────────────────────
+          Expanded(
+            child: GestureDetector(
+              onHorizontalDragEnd: (details) {
+                final v = details.primaryVelocity ?? 0;
+                if (v < -250) {
+                  _stepWeek(1);
+                } else if (v > 250) {
+                  _stepWeek(-1);
+                }
+              },
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 220),
+                switchInCurve: Curves.easeOutCubic,
+                child: _WeekCardView(
+                  key: ValueKey(_selectedWeek),
+                  week: _selectedWeek,
+                  card: card,
+                  palette: palette,
+                  tone: widget.state.babyTone,
+                  avatarNeed:
+                      widget.state.costumeOverride ?? widget.state.todayNeed,
+                  isCurrentWeek: _selectedWeek == currentWeek,
+                ),
               ),
             ),
           ),
-        ),
-      ],
+          const SizedBox(height: 12),
+
+          // ── Trimester Quick-Jump Strip ──────────────────────────────────
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _JumpPill(
+                label: '1st Tri',
+                selected: _selectedWeek <= 12,
+                palette: palette,
+                onTap: () => setState(() => _selectedWeek = 8),
+              ),
+              _JumpPill(
+                label: '2nd Tri',
+                selected: _selectedWeek >= 13 && _selectedWeek <= 27,
+                palette: palette,
+                onTap: () => setState(() => _selectedWeek = 20),
+              ),
+              _JumpPill(
+                label: '3rd Tri',
+                selected: _selectedWeek >= 28,
+                palette: palette,
+                onTap: () => setState(() => _selectedWeek = 34),
+              ),
+              _JumpPill(
+                label: 'Now (W$currentWeek)',
+                selected: _selectedWeek == currentWeek,
+                palette: palette,
+                isHighlight: true,
+                onTap: () => setState(() => _selectedWeek = currentWeek),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -178,52 +276,53 @@ class _WeekCardView extends StatelessWidget {
           ),
         ],
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            NurseryStage(
-              need: avatarNeed,
-              tone: tone,
-              expression: isCurrentWeek ? 'big-smile' : 'calm',
-              height: 215,
-              avatarSize: 174,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(28),
-              ),
-              topLeftBadge: isCurrentWeek
-                  ? Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 11,
-                        vertical: 5,
-                      ),
-                      decoration: BoxDecoration(
-                        color: palette.accent,
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: Text(
-                        'You are here',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                          color: palette.accentText,
-                        ),
-                      ),
-                    )
-                  : null,
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(22, 18, 22, 22),
-              child: Column(
-                children: [
-                  Text(
-                    'Week $week',
-                    style: TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.w800,
-                      color: palette.ink,
-                    ),
+      child: Column(
+        children: [
+          Expanded(
+            flex: 6,
+            child: LayoutBuilder(
+              builder: (_, constraints) {
+                final h = constraints.maxHeight;
+                return NurseryStage(
+                  need: avatarNeed,
+                  tone: tone,
+                  expression: isCurrentWeek ? 'big-smile' : 'calm',
+                  height: h,
+                  avatarSize: (h * 0.80).clamp(150.0, 226.0),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(28),
                   ),
-                  const SizedBox(height: 12),
+                  topLeftBadge: isCurrentWeek
+                      ? Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 11,
+                            vertical: 5,
+                          ),
+                          decoration: BoxDecoration(
+                            color: palette.accent,
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: Text(
+                            'You are here',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              color: palette.accentText,
+                            ),
+                          ),
+                        )
+                      : null,
+                );
+              },
+            ),
+          ),
+          Expanded(
+            flex: 4,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
                   Text(
                     card?.babyLine ?? 'Week $week is on the way.',
                     style: TextStyle(
@@ -235,7 +334,7 @@ class _WeekCardView extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   if (card?.sizeObject != null) ...[
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 12),
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 14,
@@ -259,7 +358,53 @@ class _WeekCardView extends StatelessWidget {
                 ],
               ),
             ),
-          ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _JumpPill extends StatelessWidget {
+  const _JumpPill({
+    required this.label,
+    required this.selected,
+    required this.palette,
+    required this.onTap,
+    this.isHighlight = false,
+  });
+
+  final String label;
+  final bool selected;
+  final AppPalette palette;
+  final VoidCallback onTap;
+  final bool isHighlight;
+
+  @override
+  Widget build(BuildContext context) {
+    final active = selected || isHighlight;
+    return SpringTap(
+      onTap: onTap,
+      child: Material(
+        color: selected ? palette.accent : palette.paper,
+        borderRadius: BorderRadius.circular(18),
+        elevation: palette.isHalloween ? 1 : 0.4,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(18),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: selected
+                    ? palette.accentText
+                    : (active ? palette.ink : palette.inkSoft),
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -287,23 +432,22 @@ class _NavButton extends StatelessWidget {
       label: label,
       button: true,
       enabled: enabled,
-      child: GestureDetector(
+      child: InkWell(
         onTap: enabled ? onTap : null,
+        borderRadius: BorderRadius.circular(14),
         child: Container(
-          constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          width: 40,
+          height: 40,
           decoration: BoxDecoration(
-            color: enabled
-                ? palette.paperRaised.withValues(alpha: 0.6)
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
+            color: palette.paperRaised,
+            borderRadius: BorderRadius.circular(14),
           ),
           child: Icon(
             icon,
-            size: 20,
+            size: 16,
             color: enabled
-                ? palette.moonlight
-                : palette.moonlightSoft.withValues(alpha: 0.3),
+                ? palette.ink
+                : palette.inkSoft.withValues(alpha: 0.35),
           ),
         ),
       ),
