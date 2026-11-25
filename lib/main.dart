@@ -4,6 +4,7 @@ import 'domain/models/app_state.dart';
 import 'presentation/screens/first_run_screen.dart';
 import 'presentation/screens/guides_screen.dart';
 import 'presentation/screens/paused_screen.dart';
+import 'presentation/screens/settings_screen.dart';
 import 'presentation/screens/this_week_screen.dart';
 import 'presentation/screens/today_screen.dart';
 import 'presentation/widgets/app_nav_bar.dart';
@@ -113,6 +114,7 @@ class _MainShell extends StatelessWidget {
   Widget _currentScreen() => switch (state.currentTab) {
     0 => TodayScreen(state: state),
     1 => ThisWeekScreen(state: state),
-    _ => const GuidesScreen(),
+    2 => const GuidesScreen(),
+    _ => SettingsScreen(state: state, isEmbedded: true),
   };
 }

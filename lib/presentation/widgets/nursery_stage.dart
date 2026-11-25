@@ -105,15 +105,36 @@ class NurseryStage extends StatelessWidget {
                 ),
               ),
 
+            // Soft warm ambient glow behind baby so it blends into pastel window
+            Positioned(
+              bottom: 12,
+              child: Container(
+                width: avatarSize * 0.85,
+                height: avatarSize * 0.85,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      (palette.isHalloween
+                              ? palette.moon
+                              : const Color(0xFFFFF8EE))
+                          .withValues(alpha: palette.isHalloween ? 0.14 : 0.45),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
             // Soft ground shadow under baby
             Positioned(
               bottom: 14,
               child: Container(
-                width: avatarSize * 0.56,
-                height: 14,
+                width: avatarSize * 0.54,
+                height: 12,
                 decoration: BoxDecoration(
                   color: Colors.black.withValues(
-                    alpha: palette.isHalloween ? 0.28 : 0.08,
+                    alpha: palette.isHalloween ? 0.28 : 0.06,
                   ),
                   borderRadius: BorderRadius.circular(100),
                 ),

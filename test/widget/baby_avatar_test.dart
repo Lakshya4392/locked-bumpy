@@ -23,8 +23,8 @@ void main() {
       final assets = images
           .map((i) => (i.image as AssetImage).assetName)
           .toList();
-      expect(assets, contains('assets/images/bodies/everyday/peach.png'));
-      expect(assets, contains('assets/images/heads/peach.png'));
+      expect(assets, contains('assets/images/bodies/everyday/fair.png'));
+      expect(assets, contains('assets/images/heads/fair.png'));
       expect(assets, contains('assets/images/expressions/calm.png'));
     });
 
@@ -32,12 +32,12 @@ void main() {
       'renders costume body + head + face for each need in Halloween mode',
       (tester) async {
         final expected = {
-          MaternalNeed.iron: 'assets/images/bodies/vampire/peach.png',
-          MaternalNeed.brain: 'assets/images/bodies/zombie/peach.png',
-          MaternalNeed.bones: 'assets/images/bodies/skeleton/peach.png',
-          MaternalNeed.water: 'assets/images/bodies/mummy/peach.png',
-          MaternalNeed.rest: 'assets/images/bodies/ghost/peach.png',
-          MaternalNeed.vitamin: 'assets/images/bodies/witch/peach.png',
+          MaternalNeed.iron: 'assets/images/bodies/vampire/fair.png',
+          MaternalNeed.brain: 'assets/images/bodies/zombie/fair.png',
+          MaternalNeed.bones: 'assets/images/bodies/skeleton/fair.png',
+          MaternalNeed.water: 'assets/images/bodies/mummy/fair.png',
+          MaternalNeed.rest: 'assets/images/bodies/ghost/fair.png',
+          MaternalNeed.vitamin: 'assets/images/bodies/witch/fair.png',
         };
 
         for (final entry in expected.entries) {
@@ -49,7 +49,7 @@ void main() {
               .map((i) => (i.image as AssetImage).assetName)
               .toList();
           expect(assets, contains(entry.value));
-          expect(assets, contains('assets/images/heads/peach.png'));
+          expect(assets, contains('assets/images/heads/fair.png'));
           expect(assets, contains('assets/images/expressions/calm.png'));
         }
       },

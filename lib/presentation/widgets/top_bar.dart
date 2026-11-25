@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../core/theme/palette.dart';
 import '../../domain/models/app_state.dart';
 import '../../domain/pregnancy.dart';
-import '../screens/settings_screen.dart';
 import '../sheets/closet_sheet.dart';
 import 'spring_tap.dart';
 
@@ -103,19 +102,6 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
                 icon: Icons.pause_rounded,
                 iconColor: palette.inkSoft,
                 onTap: state.togglePause,
-              ),
-              const SizedBox(width: 8),
-              _CircleActionButton(
-                palette: palette,
-                label: 'Settings',
-                tooltip: 'Settings',
-                icon: Icons.tune_rounded,
-                iconColor: palette.inkSoft,
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => SettingsScreen(state: state),
-                  ),
-                ),
               ),
             ],
           ),

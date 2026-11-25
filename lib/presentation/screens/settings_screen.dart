@@ -7,9 +7,14 @@ import '../../domain/pregnancy.dart';
 /// Settings screen — edit nickname, due date, look mode, view privacy
 /// & medical disclaimer, or erase all on-device data.
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key, required this.state});
+  const SettingsScreen({
+    super.key,
+    required this.state,
+    this.isEmbedded = false,
+  });
 
   final AppState state;
+  final bool isEmbedded;
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -122,24 +127,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   // Header
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
+                      horizontal: 16,
                       vertical: 8,
                     ),
                     child: Row(
                       children: [
-                        IconButton(
-                          icon: Icon(
-                            Icons.arrow_back,
-                            color: palette.moonlight,
+                        if (!widget.isEmbedded) ...[
+                          IconButton(
+                            icon: Icon(
+                              Icons.arrow_back,
+                              color: palette.moonlight,
+                            ),
+                            onPressed: () => Navigator.of(context).pop(),
+                            tooltip: 'Back',
                           ),
-                          onPressed: () => Navigator.of(context).pop(),
-                          tooltip: 'Back',
-                        ),
-                        const SizedBox(width: 4),
+                          const SizedBox(width: 4),
+                        ],
                         Text(
                           'Settings',
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 22,
                             fontWeight: FontWeight.bold,
                             color: palette.moonlight,
                           ),

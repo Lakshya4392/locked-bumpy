@@ -13,7 +13,7 @@ class AppConstants {
 
   /// Selected baby skin tone id (fair, peach, honey, deep, deepest).
   static const String prefsBabyToneKey = 'baby_tone';
-  static const String defaultBabyTone = 'peach';
+  static const String defaultBabyTone = 'fair';
   static const List<String> babyTones = [
     'fair',
     'peach',
