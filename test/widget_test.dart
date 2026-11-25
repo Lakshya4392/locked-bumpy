@@ -60,7 +60,8 @@ void main() {
       final tileTitle = '${need.needName} · Need of the Day';
 
       await tester.tap(find.text(tileTitle));
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Baby line should update to the thank-you line after tick.
       expect(

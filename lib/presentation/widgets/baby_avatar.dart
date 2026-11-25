@@ -3,9 +3,9 @@ import '../../core/constants/app_constants.dart';
 import '../../core/theme/palette.dart';
 import '../../domain/models/need.dart';
 
-/// 5-layer studio paper-doll baby avatar.
-/// Stacks at (0,0) in order: body -> back-extra -> head -> expression -> extra.
-class BabyAvatar extends StatelessWidget {
+/// 5-layer studio paper-doll baby avatar with gentle breathing float,
+/// gapless PNG rendering, and smooth expression crossfades.
+class BabyAvatar extends StatefulWidget {
   const BabyAvatar({
     super.key,
     required this.need,
@@ -85,43 +85,77 @@ class BabyAvatar extends StatelessWidget {
   }
 
   @override
+  State<BabyAvatar> createState() => _BabyAvatarState();
+}
+
+class _BabyAvatarState extends State<BabyAvatar>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _breatheController;
+  late final Animation<double> _breatheOffset;
+
+  @override
+  void initState() {
+    super.initState();
+    _breatheController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2600),
+    )..repeat(reverse: true);
+    _breatheOffset = Tween<double>(begin: 0, end: -4.0).animate(
+      CurvedAnimation(parent: _breatheController, curve: Curves.easeInOutSine),
+    );
+  }
+
+  @override
+  void dispose() {
+    _breatheController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final palette = AppPalette.of(context);
     final disableAnimations = MediaQuery.disableAnimationsOf(context);
-    final safeTone = AppConstants.babyTones.contains(tone)
-        ? tone
+    if (disableAnimations && _breatheController.isAnimating) {
+      _breatheController.stop();
+    } else if (!disableAnimations && !_breatheController.isAnimating) {
+      _breatheController.repeat(reverse: true);
+    }
+    final safeTone = AppConstants.babyTones.contains(widget.tone)
+        ? widget.tone
         : AppConstants.defaultBabyTone;
 
-    final bodyPath = assetPathFor(
+    final bodyPath = BabyAvatar.assetPathFor(
       isHalloween: palette.isHalloween,
-      need: need,
+      need: widget.need,
       tone: safeTone,
-      poseOverride: poseOverride,
+      poseOverride: widget.poseOverride,
     );
-    final backExtra = backExtraFor(
+    final backExtra = BabyAvatar.backExtraFor(
       isHalloween: palette.isHalloween,
-      need: need,
-      poseOverride: poseOverride,
+      need: widget.need,
+      poseOverride: widget.poseOverride,
     );
     final headPath = 'assets/images/heads/$safeTone.png';
-    final expressionPath = 'assets/images/expressions/$expression.png';
-    final frontExtra = frontExtraFor(
+    final expressionPath = 'assets/images/expressions/${widget.expression}.png';
+    final frontExtra = BabyAvatar.frontExtraFor(
       isHalloween: palette.isHalloween,
-      need: need,
-      poseOverride: poseOverride,
+      need: widget.need,
+      poseOverride: widget.poseOverride,
     );
 
-    Widget layer(String path, {bool withFallback = false}) {
+    Widget layer(String path, {Key? key, bool withFallback = false}) {
       return Image.asset(
         path,
-        width: size,
-        height: size,
+        key: key,
+        width: widget.size,
+        height: widget.size,
         fit: BoxFit.contain,
+        gaplessPlayback: true,
         errorBuilder: (_, _, _) => withFallback
             ? Center(
                 child: Text(
                   palette.isHalloween ? '🎃' : '👶',
-                  style: TextStyle(fontSize: size * 0.4),
+                  style: TextStyle(fontSize: widget.size * 0.4),
                 ),
               )
             : const SizedBox.shrink(),
@@ -129,28 +163,39 @@ class BabyAvatar extends StatelessWidget {
     }
 
     final doll = SizedBox(
-      width: size,
-      height: size,
+      width: widget.size,
+      height: widget.size,
       child: Stack(
         alignment: Alignment.center,
         children: [
           layer(bodyPath, withFallback: true),
           if (backExtra != null) layer(backExtra),
           layer(headPath),
-          layer(expressionPath),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 260),
+            switchInCurve: Curves.easeOutCubic,
+            switchOutCurve: Curves.easeInCubic,
+            child: layer(expressionPath, key: ValueKey(expressionPath)),
+          ),
           if (frontExtra != null) layer(frontExtra),
         ],
       ),
     );
 
-    if (disableAnimations || hopAnimation == null) return doll;
+    if (disableAnimations) return doll;
 
     return AnimatedBuilder(
-      animation: hopAnimation!,
-      builder: (_, child) => Transform.translate(
-        offset: Offset(0, hopAnimation!.value),
-        child: child,
-      ),
+      animation: Listenable.merge([
+        _breatheOffset,
+        if (widget.hopAnimation != null) widget.hopAnimation!,
+      ]),
+      builder: (_, child) {
+        final hop = widget.hopAnimation?.value ?? 0.0;
+        return Transform.translate(
+          offset: Offset(0, _breatheOffset.value + hop),
+          child: child,
+        );
+      },
       child: doll,
     );
   }

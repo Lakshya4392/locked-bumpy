@@ -58,7 +58,9 @@ class _LittleBumpyAppState extends State<LittleBumpyApp> {
         body: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 440),
-            child: Container(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 350),
+              curve: Curves.easeInOutCubic,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
@@ -92,7 +94,17 @@ class _MainShell extends StatelessWidget {
     return Column(
       children: [
         TopBar(state: state),
-        Expanded(child: _currentScreen()),
+        Expanded(
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 240),
+            switchInCurve: Curves.easeOutCubic,
+            switchOutCurve: Curves.easeInCubic,
+            child: KeyedSubtree(
+              key: ValueKey(state.currentTab),
+              child: _currentScreen(),
+            ),
+          ),
+        ),
         AppNavBar(state: state),
       ],
     );

@@ -84,14 +84,20 @@ class _ThisWeekScreenState extends State<ThisWeekScreen> {
             child: Column(
               children: [
                 Expanded(
-                  child: _WeekCardView(
-                    week: _selectedWeek,
-                    card: card,
-                    palette: palette,
-                    tone: widget.state.babyTone,
-                    avatarNeed:
-                        widget.state.costumeOverride ?? widget.state.todayNeed,
-                    isCurrentWeek: _selectedWeek == _currentWeek(),
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 220),
+                    switchInCurve: Curves.easeOutCubic,
+                    child: _WeekCardView(
+                      key: ValueKey(_selectedWeek),
+                      week: _selectedWeek,
+                      card: card,
+                      palette: palette,
+                      tone: widget.state.babyTone,
+                      avatarNeed:
+                          widget.state.costumeOverride ??
+                          widget.state.todayNeed,
+                      isCurrentWeek: _selectedWeek == _currentWeek(),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -181,6 +187,7 @@ class _WeekDots extends StatelessWidget {
 
 class _WeekCardView extends StatelessWidget {
   const _WeekCardView({
+    super.key,
     required this.week,
     required this.card,
     required this.palette,

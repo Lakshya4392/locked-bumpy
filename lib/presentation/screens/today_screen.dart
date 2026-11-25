@@ -7,6 +7,7 @@ import '../../domain/models/content_record.dart';
 import '../../domain/models/need.dart';
 import '../widgets/need_icon_badge.dart';
 import '../widgets/nursery_stage.dart';
+import '../widgets/spring_tap.dart';
 
 /// Today tab — daily loop under 30 seconds.
 /// Baby-voice lines are loaded from [ContentLoader] (bundled JSON, offline).
@@ -208,15 +209,20 @@ class _TodayScreenState extends State<TodayScreen>
                 const SizedBox(height: 14),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Text(
-                    babyLine,
-                    style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600,
-                      height: 1.35,
-                      color: palette.ink,
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 240),
+                    switchInCurve: Curves.easeOutCubic,
+                    child: Text(
+                      babyLine,
+                      key: ValueKey(babyLine),
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        height: 1.35,
+                        color: palette.ink,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                 ),
                 const SizedBox(height: 6),
@@ -353,74 +359,80 @@ class _CheckInTile extends StatelessWidget {
       label: '$title check-in',
       checked: isTicked,
       button: true,
-      child: Material(
-        color: palette.paper,
-        borderRadius: BorderRadius.circular(22),
-        elevation: palette.isHalloween ? 2 : 0.5,
-        shadowColor: Colors.black.withValues(alpha: 0.08),
-        child: InkWell(
-          onTap: onTap,
+      child: SpringTap(
+        onTap: onTap,
+        child: Material(
+          color: palette.paper,
           borderRadius: BorderRadius.circular(22),
-          child: Container(
-            constraints: const BoxConstraints(minHeight: 68),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(22),
-              border: isTicked
-                  ? Border.all(
-                      color: need.color.withValues(alpha: 0.55),
-                      width: 1.5,
-                    )
-                  : null,
-            ),
-            child: Row(
-              children: [
-                NeedIconBadge(need: need, size: 46, isCompleted: isTicked),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: palette.ink,
+          elevation: palette.isHalloween ? 2 : 0.5,
+          shadowColor: Colors.black.withValues(alpha: 0.08),
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(22),
+            child: Container(
+              constraints: const BoxConstraints(minHeight: 68),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(22),
+                border: isTicked
+                    ? Border.all(
+                        color: need.color.withValues(alpha: 0.55),
+                        width: 1.5,
+                      )
+                    : null,
+              ),
+              child: Row(
+                children: [
+                  NeedIconBadge(need: need, size: 46, isCompleted: isTicked),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: palette.ink,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        subtitle,
-                        style: TextStyle(fontSize: 12, color: palette.inkSoft),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 8),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 220),
-                  width: 30,
-                  height: 30,
-                  decoration: BoxDecoration(
-                    color: isTicked ? palette.accent : palette.paperRaised,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: isTicked
-                          ? palette.accent
-                          : palette.inkSoft.withValues(alpha: 0.3),
-                      width: 1.5,
+                        const SizedBox(height: 2),
+                        Text(
+                          subtitle,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: palette.inkSoft,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  child: isTicked
-                      ? Icon(
-                          Icons.check_rounded,
-                          size: 18,
-                          color: palette.accentText,
-                        )
-                      : null,
-                ),
-              ],
+                  const SizedBox(width: 8),
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 220),
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: isTicked ? palette.accent : palette.paperRaised,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: isTicked
+                            ? palette.accent
+                            : palette.inkSoft.withValues(alpha: 0.3),
+                        width: 1.5,
+                      ),
+                    ),
+                    child: isTicked
+                        ? Icon(
+                            Icons.check_rounded,
+                            size: 18,
+                            color: palette.accentText,
+                          )
+                        : null,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

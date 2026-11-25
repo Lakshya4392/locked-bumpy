@@ -4,6 +4,7 @@ import '../../domain/models/app_state.dart';
 import '../../domain/pregnancy.dart';
 import '../screens/settings_screen.dart';
 import '../sheets/closet_sheet.dart';
+import 'spring_tap.dart';
 
 /// App top bar: baby & week pill + circular action buttons (Closet, Lamp, Pause, Settings).
 class TopBar extends StatelessWidget implements PreferredSizeWidget {
@@ -148,18 +149,22 @@ class _CircleActionButton extends StatelessWidget {
       button: true,
       child: Tooltip(
         message: tooltip,
-        child: Material(
-          color: palette.paper,
-          shape: const CircleBorder(),
-          elevation: palette.isHalloween ? 2 : 0.5,
-          shadowColor: Colors.black.withValues(alpha: 0.15),
-          child: InkWell(
-            onTap: onTap,
-            customBorder: const CircleBorder(),
-            child: SizedBox(
-              width: 38,
-              height: 38,
-              child: Icon(icon, size: 19, color: iconColor),
+        child: SpringTap(
+          onTap: onTap,
+          pressedScale: 0.9,
+          child: Material(
+            color: palette.paper,
+            shape: const CircleBorder(),
+            elevation: palette.isHalloween ? 2 : 0.5,
+            shadowColor: Colors.black.withValues(alpha: 0.15),
+            child: InkWell(
+              onTap: onTap,
+              customBorder: const CircleBorder(),
+              child: SizedBox(
+                width: 38,
+                height: 38,
+                child: Icon(icon, size: 19, color: iconColor),
+              ),
             ),
           ),
         ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/palette.dart';
 import '../../domain/models/app_state.dart';
+import 'spring_tap.dart';
 
 /// Floating capsule bottom navigation bar (Today, This Week, Guides).
 class AppNavBar extends StatelessWidget {
@@ -82,42 +83,46 @@ class _NavPill extends StatelessWidget {
       label: label,
       selected: selected,
       button: true,
-      child: InkWell(
+      child: SpringTap(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(24),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 220),
-          curve: Curves.easeOutCubic,
-          padding: EdgeInsets.symmetric(
-            horizontal: selected ? 18 : 16,
-            vertical: 10,
-          ),
-          decoration: BoxDecoration(
-            color: selected ? palette.accent : Colors.transparent,
-            borderRadius: BorderRadius.circular(24),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                icon,
-                size: 20,
-                color: selected
-                    ? palette.accentText
-                    : palette.tabBarText.withValues(alpha: 0.55),
-              ),
-              if (selected) ...[
-                const SizedBox(width: 7),
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                    color: palette.accentText,
-                  ),
+        pressedScale: 0.94,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(24),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeOutCubic,
+            padding: EdgeInsets.symmetric(
+              horizontal: selected ? 18 : 16,
+              vertical: 10,
+            ),
+            decoration: BoxDecoration(
+              color: selected ? palette.accent : Colors.transparent,
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  icon,
+                  size: 20,
+                  color: selected
+                      ? palette.accentText
+                      : palette.tabBarText.withValues(alpha: 0.55),
                 ),
+                if (selected) ...[
+                  const SizedBox(width: 7),
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: palette.accentText,
+                    ),
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),
