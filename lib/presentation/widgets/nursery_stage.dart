@@ -17,6 +17,7 @@ class NurseryStage extends StatelessWidget {
     this.hopAnimation,
     this.topLeftBadge,
     this.showSparkle = false,
+    this.borderRadius,
   });
 
   final MaternalNeed need;
@@ -28,13 +29,14 @@ class NurseryStage extends StatelessWidget {
   final Animation<double>? hopAnimation;
   final Widget? topLeftBadge;
   final bool showSparkle;
+  final BorderRadius? borderRadius;
 
   @override
   Widget build(BuildContext context) {
     final palette = AppPalette.of(context);
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(24),
+      borderRadius: borderRadius ?? BorderRadius.circular(24),
       child: SizedBox(
         height: height,
         width: double.infinity,

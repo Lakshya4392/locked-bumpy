@@ -39,7 +39,7 @@ void main() {
       await tester.pumpWidget(_wrap(TodayScreen(state: state), state));
       await tester.pump();
 
-      expect(find.text("Today's 3 Check-Ins"), findsOneWidget);
+      expect(find.text('Water'), findsOneWidget);
       expect(
         find.text(
           'This app is not medical advice. '
@@ -57,7 +57,8 @@ void main() {
       await tester.pump();
 
       final need = NeedRotation.forDate(DateTime.now());
-      final tileTitle = '${need.needName} · Need of the Day';
+      final tileTitle =
+          need.needName[0] + need.needName.substring(1).toLowerCase();
 
       await tester.tap(find.text(tileTitle));
       await tester.pump();

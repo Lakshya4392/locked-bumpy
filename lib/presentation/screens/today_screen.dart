@@ -10,8 +10,8 @@ import '../widgets/need_icon_badge.dart';
 import '../widgets/nursery_stage.dart';
 import '../widgets/spring_tap.dart';
 
-/// Today tab — large illustrated nursery hero with Bumpy front-and-center,
-/// clean borderless bento check-in cards, and zero visual clutter.
+/// Today tab — full-bleed nursery hero with Bumpy front-and-center,
+/// editorial baby quote, and 3 equal-size borderless Bento check-in cards.
 class TodayScreen extends StatefulWidget {
   const TodayScreen({super.key, required this.state});
 
@@ -141,6 +141,20 @@ class _TodayScreenState extends State<TodayScreen>
     };
   }
 
+  String _shortNeedTitle(MaternalNeed need) =>
+      need.needName[0] + need.needName.substring(1).toLowerCase();
+
+  String _shortNeedHint(MaternalNeed need) {
+    return switch (need) {
+      MaternalNeed.iron => 'Lentils & beans',
+      MaternalNeed.brain => 'Greens & nuts',
+      MaternalNeed.bones => 'Milk or yogurt',
+      MaternalNeed.water => 'Glass of water',
+      MaternalNeed.rest => 'Five-min pause',
+      MaternalNeed.vitamin => "Doctor's pick",
+    };
+  }
+
   // ── Build ─────────────────────────────────────────────────────────────────
 
   @override
@@ -157,13 +171,12 @@ class _TodayScreenState extends State<TodayScreen>
     final babyLine = _babyLine(need, needTicked, allDone, palette);
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // ── Big Hero Nursery Stage + Baby ───────────────────────────────
+          // ── Full-Bleed Nursery Hero Card ────────────────────────────────
           Container(
-            padding: const EdgeInsets.fromLTRB(10, 10, 10, 16),
             decoration: BoxDecoration(
               color: palette.paper,
               borderRadius: BorderRadius.circular(28),
@@ -189,8 +202,11 @@ class _TodayScreenState extends State<TodayScreen>
                         expression: _babyExpression(needTicked, allDone),
                         hopAnimation: _hopAnimation,
                         showSparkle: needTicked || allDone,
-                        height: 244,
-                        avatarSize: 192,
+                        height: 276,
+                        avatarSize: 212,
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(28),
+                        ),
                         topLeftBadge: Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 11,
@@ -226,21 +242,21 @@ class _TodayScreenState extends State<TodayScreen>
                         ),
                       ),
                     ),
-                    // Subtle floating Outfit / Closet pill in bottom-right of stage
+                    // Subtle floating Outfit / Closet pill
                     Positioned(
-                      bottom: 10,
-                      right: 10,
+                      bottom: 12,
+                      right: 12,
                       child: SpringTap(
                         onTap: () => ClosetSheet.show(context, state),
                         child: Material(
-                          color: palette.paper.withValues(alpha: 0.9),
+                          color: palette.paper.withValues(alpha: 0.92),
                           borderRadius: BorderRadius.circular(16),
                           child: InkWell(
                             onTap: () => ClosetSheet.show(context, state),
                             borderRadius: BorderRadius.circular(16),
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
+                                horizontal: 11,
                                 vertical: 6,
                               ),
                               child: Row(
@@ -269,75 +285,65 @@ class _TodayScreenState extends State<TodayScreen>
                     ),
                   ],
                 ),
-                const SizedBox(height: 14),
+
+                // Editorial Baby Quote Footer
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  padding: const EdgeInsets.fromLTRB(18, 14, 18, 16),
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 240),
                     switchInCurve: Curves.easeOutCubic,
-                    child: Text(
-                      babyLine,
+                    child: Row(
                       key: ValueKey(babyLine),
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w600,
-                        height: 1.35,
-                        color: palette.ink,
-                      ),
-                      textAlign: TextAlign.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 4,
+                          height: 22,
+                          decoration: BoxDecoration(
+                            color: need.color.withValues(alpha: 0.7),
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Flexible(
+                          child: Text(
+                            babyLine,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              height: 1.35,
+                              color: palette.ink,
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: 14),
 
-          // ── Check-ins header ────────────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Today's 3 Check-Ins",
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: palette.moonlight,
-                  ),
-                ),
-                Text(
-                  '${state.completedCheckIns.length} of 3',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: palette.moonlightSoft,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 10),
-
-          // Check-in 1 — Featured Need of the Day card (borderless!)
-          _FeaturedCheckInCard(
-            title: '${need.needName} · Need of the Day',
-            subtitle: need.foodHint,
-            need: need,
-            isTicked: needTicked,
-            palette: palette,
-            onTap: () => _onCheckIn(AppConstants.checkInNeed),
-          ),
-          const SizedBox(height: 10),
-
-          // Check-ins 2 & 3 — Side-by-side Bento Tiles (borderless!)
+          // ── 3 Equal-Size Borderless Bento Check-In Grid Cards ───────────
           Row(
             children: [
               Expanded(
-                child: _BentoCheckInTile(
+                child: _GridCheckInCard(
+                  title: _shortNeedTitle(need),
+                  subtitle: _shortNeedHint(need),
+                  need: need,
+                  isTicked: needTicked,
+                  palette: palette,
+                  onTap: () => _onCheckIn(AppConstants.checkInNeed),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _GridCheckInCard(
                   title: 'Water',
-                  subtitle: 'Refreshing glass',
+                  subtitle: _shortNeedHint(MaternalNeed.water),
                   need: MaternalNeed.water,
                   isTicked: waterTicked,
                   palette: palette,
@@ -346,13 +352,13 @@ class _TodayScreenState extends State<TodayScreen>
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: _BentoCheckInTile(
-                  title: thirdNeed == MaternalNeed.rest
-                      ? 'Rest'
-                      : 'Prenatal Vitamin',
-                  subtitle: thirdNeed == MaternalNeed.rest
-                      ? 'Feet up for five'
-                      : 'Doctor chosen',
+                child: _GridCheckInCard(
+                  title: thirdNeed == MaternalNeed.rest ? 'Rest' : 'Vitamin',
+                  subtitle: _shortNeedHint(
+                    thirdNeed == MaternalNeed.rest
+                        ? MaternalNeed.rest
+                        : MaternalNeed.vitamin,
+                  ),
                   need: thirdNeed == MaternalNeed.rest
                       ? MaternalNeed.rest
                       : MaternalNeed.vitamin,
@@ -364,12 +370,12 @@ class _TodayScreenState extends State<TodayScreen>
             ],
           ),
 
-          const SizedBox(height: 18),
+          const SizedBox(height: 16),
           Text(
             AppConstants.disclaimer,
             style: TextStyle(
               fontSize: 11,
-              color: palette.moonlightSoft.withValues(alpha: 0.78),
+              color: palette.moonlightSoft.withValues(alpha: 0.75),
               height: 1.35,
             ),
             textAlign: TextAlign.center,
@@ -381,10 +387,10 @@ class _TodayScreenState extends State<TodayScreen>
   }
 }
 
-// ── Featured Need of the Day Card (Borderless, Soft Shadow) ────────────────
+// ── Uniform Symmetrical Bento Grid Card ────────────────────────────────────
 
-class _FeaturedCheckInCard extends StatelessWidget {
-  const _FeaturedCheckInCard({
+class _GridCheckInCard extends StatelessWidget {
+  const _GridCheckInCard({
     required this.title,
     required this.subtitle,
     required this.need,
@@ -404,121 +410,7 @@ class _FeaturedCheckInCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final bgColor = isTicked
         ? Color.alphaBlend(
-            need.color.withValues(alpha: palette.isHalloween ? 0.16 : 0.08),
-            palette.paper,
-          )
-        : palette.paper;
-
-    return Semantics(
-      label: '$title check-in',
-      checked: isTicked,
-      button: true,
-      child: SpringTap(
-        onTap: onTap,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(22),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(
-                  alpha: palette.isHalloween ? 0.25 : 0.04,
-                ),
-                blurRadius: 16,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Material(
-            color: bgColor,
-            borderRadius: BorderRadius.circular(22),
-            child: InkWell(
-              onTap: onTap,
-              borderRadius: BorderRadius.circular(22),
-              child: Container(
-                constraints: const BoxConstraints(minHeight: 70),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 12,
-                ),
-                child: Row(
-                  children: [
-                    NeedIconBadge(need: need, size: 46, isCompleted: isTicked),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            title,
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: palette.ink,
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            subtitle,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: palette.inkSoft,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 220),
-                      width: 28,
-                      height: 28,
-                      decoration: BoxDecoration(
-                        color: isTicked ? palette.accent : palette.paperRaised,
-                        shape: BoxShape.circle,
-                      ),
-                      child: isTicked
-                          ? Icon(
-                              Icons.check_rounded,
-                              size: 17,
-                              color: palette.accentText,
-                            )
-                          : null,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// ── Compact Bento Check-In Tile (Borderless, Soft Shadow) ──────────────────
-
-class _BentoCheckInTile extends StatelessWidget {
-  const _BentoCheckInTile({
-    required this.title,
-    required this.subtitle,
-    required this.need,
-    required this.isTicked,
-    required this.palette,
-    required this.onTap,
-  });
-
-  final String title;
-  final String subtitle;
-  final MaternalNeed need;
-  final bool isTicked;
-  final AppPalette palette;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final bgColor = isTicked
-        ? Color.alphaBlend(
-            need.color.withValues(alpha: palette.isHalloween ? 0.16 : 0.08),
+            need.color.withValues(alpha: palette.isHalloween ? 0.18 : 0.09),
             palette.paper,
           )
         : palette.paper;
@@ -549,55 +441,64 @@ class _BentoCheckInTile extends StatelessWidget {
               onTap: onTap,
               borderRadius: BorderRadius.circular(22),
               child: Padding(
-                padding: const EdgeInsets.all(14),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 14,
+                ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    Stack(
+                      clipBehavior: Clip.none,
                       children: [
                         NeedIconBadge(
                           need: need,
-                          size: 40,
+                          size: 46,
                           isCompleted: isTicked,
                         ),
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 220),
-                          width: 26,
-                          height: 26,
-                          decoration: BoxDecoration(
-                            color: isTicked
-                                ? palette.accent
-                                : palette.paperRaised,
-                            shape: BoxShape.circle,
+                        if (isTicked)
+                          Positioned(
+                            right: -2,
+                            bottom: -2,
+                            child: Container(
+                              width: 18,
+                              height: 18,
+                              decoration: BoxDecoration(
+                                color: palette.accent,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: palette.paper,
+                                  width: 1.5,
+                                ),
+                              ),
+                              child: Icon(
+                                Icons.check_rounded,
+                                size: 11,
+                                color: palette.accentText,
+                              ),
+                            ),
                           ),
-                          child: isTicked
-                              ? Icon(
-                                  Icons.check_rounded,
-                                  size: 15,
-                                  color: palette.accentText,
-                                )
-                              : null,
-                        ),
                       ],
                     ),
                     const SizedBox(height: 10),
                     Text(
                       title,
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 13,
                         fontWeight: FontWeight.bold,
                         color: palette.ink,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 2),
                     Text(
                       subtitle,
-                      style: TextStyle(fontSize: 11, color: palette.inkSoft),
+                      style: TextStyle(fontSize: 10.5, color: palette.inkSoft),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
