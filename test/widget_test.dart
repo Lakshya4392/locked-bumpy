@@ -39,10 +39,8 @@ void main() {
       await tester.pumpWidget(_wrap(TodayScreen(state: state), state));
       await tester.pump();
 
-      expect(find.bySemanticsLabel('Water'), findsOneWidget);
-      expect(find.text('For you'), findsOneWidget);
-      // Tappable check-in and editorial tiles present.
-      expect(find.byType(InkWell), findsAtLeastNWidgets(5));
+      expect(find.text('Water'), findsOneWidget);
+      expect(find.byType(InkWell), findsAtLeastNWidgets(3));
     });
 
     testWidgets('ticking Need of the Day shows thank-you line', (tester) async {
@@ -54,7 +52,7 @@ void main() {
       final tileTitle =
           need.needName[0] + need.needName.substring(1).toLowerCase();
 
-      await tester.tap(find.bySemanticsLabel(tileTitle));
+      await tester.tap(find.text(tileTitle));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 500));
 

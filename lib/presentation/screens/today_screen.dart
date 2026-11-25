@@ -5,14 +5,12 @@ import '../../core/theme/palette.dart';
 import '../../domain/models/app_state.dart';
 import '../../domain/models/content_record.dart';
 import '../../domain/models/need.dart';
-import '../../domain/pregnancy.dart';
 import '../sheets/closet_sheet.dart';
 import '../widgets/need_icon_badge.dart';
 import '../widgets/nursery_stage.dart';
 import '../widgets/spring_tap.dart';
 
-/// Today tab — editorial greeting, full-bleed Nursery Hero, inline circular
-/// check-in strip (inspired by clean wellness check-in bar), and "For you" 2-card row.
+/// Today tab — clean, clutter-free Nursery Hero + baby quote + 3 airy check-in row cards.
 class TodayScreen extends StatefulWidget {
   const TodayScreen({super.key, required this.state});
 
@@ -128,7 +126,7 @@ class _TodayScreenState extends State<TodayScreen>
     return 'calm';
   }
 
-  String _shortNeedTitle(MaternalNeed need) =>
+  String _titleCaseNeed(MaternalNeed need) =>
       need.needName[0] + need.needName.substring(1).toLowerCase();
 
   // ── Build ─────────────────────────────────────────────────────────────────
@@ -145,36 +143,17 @@ class _TodayScreenState extends State<TodayScreen>
     final vitaminTicked = state.isChecked(AppConstants.checkInVitamin);
     final allDone = state.allChecked;
     final babyLine = _babyLine(need, needTicked, allDone, palette);
-    final week = state.dueDate == null
-        ? 4
-        : PregnancyCalculator.weekFromDueDate(
-            dueDate: state.dueDate!,
-            currentDate: DateTime.now(),
-          );
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(18, 2, 18, 12),
+      padding: const EdgeInsets.fromLTRB(16, 6, 16, 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // ── Editorial Headline ──────────────────────────────────────────
-          Text(
-            'How have things\nbeen today?',
-            style: TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.w800,
-              height: 1.15,
-              letterSpacing: -0.4,
-              color: palette.moonlight,
-            ),
-          ),
-          const SizedBox(height: 14),
-
-          // ── Illustrated Hero Stage + Inline Check-In Strip ──────────────
+          // ── Full-Bleed Nursery Hero Card ────────────────────────────────
           Container(
             decoration: BoxDecoration(
               color: palette.paper,
-              borderRadius: BorderRadius.circular(26),
+              borderRadius: BorderRadius.circular(28),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(
@@ -195,10 +174,10 @@ class _TodayScreenState extends State<TodayScreen>
                     expression: _babyExpression(needTicked, allDone),
                     hopAnimation: _hopAnimation,
                     showSparkle: needTicked || allDone,
-                    height: 215,
-                    avatarSize: 176,
+                    height: 256,
+                    avatarSize: 202,
                     borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(26),
+                      top: Radius.circular(28),
                     ),
                     topLeftBadge: Container(
                       padding: const EdgeInsets.symmetric(
@@ -235,143 +214,59 @@ class _TodayScreenState extends State<TodayScreen>
                     ),
                   ),
                 ),
-
-                // Inline Check-In Bar (Reference: "How do you feel?" + circular icons)
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 14, 14),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 240),
-                          child: Column(
-                            key: ValueKey(babyLine),
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                babyLine,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: palette.ink,
-                                  height: 1.25,
-                                ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                'Tap to log today',
-                                style: TextStyle(
-                                  fontSize: 11.5,
-                                  color: palette.inkSoft,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                  padding: const EdgeInsets.fromLTRB(18, 14, 18, 16),
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 240),
+                    switchInCurve: Curves.easeOutCubic,
+                    child: Text(
+                      babyLine,
+                      key: ValueKey(babyLine),
+                      style: TextStyle(
+                        fontSize: 16.5,
+                        fontWeight: FontWeight.w600,
+                        height: 1.35,
+                        color: palette.ink,
                       ),
-                      const SizedBox(width: 10),
-                      _InlineCheckButton(
-                        title: _shortNeedTitle(need),
-                        need: need,
-                        isTicked: needTicked,
-                        palette: palette,
-                        onTap: () => _onCheckIn(AppConstants.checkInNeed),
-                      ),
-                      const SizedBox(width: 8),
-                      _InlineCheckButton(
-                        title: 'Water',
-                        need: MaternalNeed.water,
-                        isTicked: waterTicked,
-                        palette: palette,
-                        onTap: () => _onCheckIn(AppConstants.checkInWater),
-                      ),
-                      const SizedBox(width: 8),
-                      _InlineCheckButton(
-                        title: thirdNeed == MaternalNeed.rest
-                            ? 'Rest'
-                            : 'Vitamin',
-                        need: thirdNeed == MaternalNeed.rest
-                            ? MaternalNeed.rest
-                            : MaternalNeed.vitamin,
-                        isTicked: vitaminTicked,
-                        palette: palette,
-                        onTap: () => _onCheckIn(AppConstants.checkInVitamin),
-                      ),
-                    ],
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: 16),
 
-          // ── "For you" 2-Card Editorial Section ──────────────────────────
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'For you',
-                style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w800,
-                  color: palette.moonlight,
-                ),
-              ),
-              GestureDetector(
-                onTap: () => state.setTab(2),
-                child: Text(
-                  'See all',
-                  style: TextStyle(
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.w600,
-                    color: palette.moonlightSoft,
-                  ),
-                ),
-              ),
-            ],
+          // ── 3 Clean Borderless Row Check-In Cards ───────────────────────
+          _CheckInRowCard(
+            title: _titleCaseNeed(need),
+            subtitle: need.foodHint,
+            need: need,
+            isTicked: needTicked,
+            palette: palette,
+            onTap: () => _onCheckIn(AppConstants.checkInNeed),
           ),
           const SizedBox(height: 10),
-
-          Row(
-            children: [
-              Expanded(
-                child: _ForYouCard(
-                  eyebrow: 'Week $week · ${state.babyDisplayName}',
-                  title: 'This Week\nGrowth Note',
-                  palette: palette,
-                  tint: palette.isHalloween
-                      ? const Color(0xFF3A2A52)
-                      : const Color(0xFFF3EFEA),
-                  preview: Image.asset(
-                    NeedIconBadge.iconPathFor(MaternalNeed.rest),
-                    width: 52,
-                    height: 52,
-                    fit: BoxFit.contain,
-                  ),
-                  onTap: () => state.setTab(1),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _ForYouCard(
-                  eyebrow: '6 Guides · Offline',
-                  title: 'Maternal\nCare Guides',
-                  palette: palette,
-                  tint: palette.isHalloween
-                      ? const Color(0xFF322548)
-                      : const Color(0xFFEEF3EE),
-                  preview: Image.asset(
-                    NeedIconBadge.iconPathFor(need),
-                    width: 52,
-                    height: 52,
-                    fit: BoxFit.contain,
-                  ),
-                  onTap: () => state.setTab(2),
-                ),
-              ),
-            ],
+          _CheckInRowCard(
+            title: 'Water',
+            subtitle: MaternalNeed.water.foodHint,
+            need: MaternalNeed.water,
+            isTicked: waterTicked,
+            palette: palette,
+            onTap: () => _onCheckIn(AppConstants.checkInWater),
+          ),
+          const SizedBox(height: 10),
+          _CheckInRowCard(
+            title: thirdNeed == MaternalNeed.rest ? 'Rest' : 'Prenatal Vitamin',
+            subtitle: thirdNeed == MaternalNeed.rest
+                ? MaternalNeed.rest.foodHint
+                : MaternalNeed.vitamin.foodHint,
+            need: thirdNeed == MaternalNeed.rest
+                ? MaternalNeed.rest
+                : MaternalNeed.vitamin,
+            isTicked: vitaminTicked,
+            palette: palette,
+            onTap: () => _onCheckIn(AppConstants.checkInVitamin),
           ),
           const SizedBox(height: 8),
         ],
@@ -380,11 +275,12 @@ class _TodayScreenState extends State<TodayScreen>
   }
 }
 
-// ── Inline Circular Check-In Icon Button ───────────────────────────────────
+// ── Clean Borderless Check-In Row Card (Image 2 "Today's breakdown" style) ─
 
-class _InlineCheckButton extends StatelessWidget {
-  const _InlineCheckButton({
+class _CheckInRowCard extends StatelessWidget {
+  const _CheckInRowCard({
     required this.title,
+    required this.subtitle,
     required this.need,
     required this.isTicked,
     required this.palette,
@@ -392,6 +288,7 @@ class _InlineCheckButton extends StatelessWidget {
   });
 
   final String title;
+  final String subtitle;
   final MaternalNeed need;
   final bool isTicked;
   final AppPalette palette;
@@ -399,151 +296,90 @@ class _InlineCheckButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bgColor = isTicked
+        ? Color.alphaBlend(
+            need.color.withValues(alpha: palette.isHalloween ? 0.16 : 0.08),
+            palette.paper,
+          )
+        : palette.paper;
+
     return Semantics(
       label: title,
       checked: isTicked,
       button: true,
       child: SpringTap(
         onTap: onTap,
-        pressedScale: 0.9,
-        child: InkWell(
-          onTap: onTap,
-          customBorder: const CircleBorder(),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  NeedIconBadge(need: need, size: 46, isCompleted: isTicked),
-                  if (isTicked)
-                    Positioned(
-                      right: -2,
-                      bottom: -2,
-                      child: Container(
-                        width: 17,
-                        height: 17,
-                        decoration: BoxDecoration(
-                          color: palette.accent,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: palette.paper, width: 1.5),
-                        ),
-                        child: Icon(
-                          Icons.check_rounded,
-                          size: 10,
-                          color: palette.accentText,
-                        ),
-                      ),
-                    ),
-                ],
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(22),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(
+                  alpha: palette.isHalloween ? 0.25 : 0.04,
+                ),
+                blurRadius: 16,
+                offset: const Offset(0, 4),
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-// ── "For you" Editorial Card (matches reference bottom cards) ──────────────
-
-class _ForYouCard extends StatelessWidget {
-  const _ForYouCard({
-    required this.eyebrow,
-    required this.title,
-    required this.palette,
-    required this.tint,
-    required this.preview,
-    required this.onTap,
-  });
-
-  final String eyebrow;
-  final String title;
-  final AppPalette palette;
-  final Color tint;
-  final Widget preview;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return SpringTap(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(
-                alpha: palette.isHalloween ? 0.25 : 0.04,
-              ),
-              blurRadius: 16,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Material(
-          color: palette.paper,
-          borderRadius: BorderRadius.circular(24),
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(24),
-            child: Padding(
-              padding: const EdgeInsets.all(14),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    height: 76,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: tint,
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    child: Center(child: preview),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    eyebrow,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w500,
-                      color: palette.inkSoft,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          title,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w800,
-                            height: 1.2,
-                            color: palette.ink,
+          child: Material(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(22),
+            child: InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(22),
+              child: Container(
+                constraints: const BoxConstraints(minHeight: 68),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 11,
+                ),
+                child: Row(
+                  children: [
+                    NeedIconBadge(need: need, size: 46, isCompleted: isTicked),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: palette.ink,
+                            ),
                           ),
-                        ),
+                          const SizedBox(height: 2),
+                          Text(
+                            subtitle,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: palette.inkSoft,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 6),
-                      Container(
-                        width: 30,
-                        height: 30,
-                        decoration: BoxDecoration(
-                          color: palette.accent,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.arrow_forward_rounded,
-                          size: 16,
-                          color: palette.accentText,
-                        ),
+                    ),
+                    const SizedBox(width: 8),
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 220),
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        color: isTicked ? palette.accent : palette.paperRaised,
+                        shape: BoxShape.circle,
                       ),
-                    ],
-                  ),
-                ],
+                      child: isTicked
+                          ? Icon(
+                              Icons.check_rounded,
+                              size: 17,
+                              color: palette.accentText,
+                            )
+                          : null,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
