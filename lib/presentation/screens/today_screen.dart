@@ -146,7 +146,7 @@ class _TodayScreenState extends State<TodayScreen>
     final babyLine = _babyLine(need, needTicked, allDone, palette);
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
+      padding: const EdgeInsets.fromLTRB(16, 2, 16, 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -172,8 +172,8 @@ class _TodayScreenState extends State<TodayScreen>
                 expression: _babyExpression(needTicked, allDone),
                 hopAnimation: _hopAnimation,
                 showSparkle: needTicked || allDone,
-                height: 266,
-                avatarSize: 214,
+                height: 292,
+                avatarSize: 234,
                 borderRadius: BorderRadius.circular(28),
                 topLeftBadge: Container(
                   padding: const EdgeInsets.symmetric(
@@ -333,10 +333,12 @@ class _CheckInRowCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(22),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(
-                  alpha: palette.isHalloween ? 0.25 : 0.04,
-                ),
-                blurRadius: 16,
+                color: isTicked && palette.isHalloween
+                    ? need.color.withValues(alpha: 0.28)
+                    : Colors.black.withValues(
+                        alpha: palette.isHalloween ? 0.25 : 0.04,
+                      ),
+                blurRadius: isTicked && palette.isHalloween ? 18 : 16,
                 offset: const Offset(0, 4),
               ),
             ],
@@ -348,14 +350,14 @@ class _CheckInRowCard extends StatelessWidget {
               onTap: onTap,
               borderRadius: BorderRadius.circular(22),
               child: Container(
-                constraints: const BoxConstraints(minHeight: 64),
+                constraints: const BoxConstraints(minHeight: 68),
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
-                  vertical: 10,
+                  vertical: 12,
                 ),
                 child: Row(
                   children: [
-                    NeedIconBadge(need: need, size: 44, isCompleted: isTicked),
+                    NeedIconBadge(need: need, size: 46, isCompleted: isTicked),
                     const SizedBox(width: 14),
                     Expanded(
                       child: Text(
@@ -370,15 +372,17 @@ class _CheckInRowCard extends StatelessWidget {
                     const SizedBox(width: 8),
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 220),
-                      width: 28,
-                      height: 28,
+                      width: 30,
+                      height: 30,
                       decoration: BoxDecoration(
                         color: isTicked ? palette.accent : palette.paperRaised,
                         shape: BoxShape.circle,
                       ),
                       child: isTicked
                           ? Icon(
-                              Icons.check_rounded,
+                              palette.isHalloween
+                                  ? Icons.auto_awesome_rounded
+                                  : Icons.check_rounded,
                               size: 17,
                               color: palette.accentText,
                             )

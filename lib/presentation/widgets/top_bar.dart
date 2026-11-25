@@ -3,9 +3,11 @@ import '../../core/theme/palette.dart';
 import '../../domain/models/app_state.dart';
 import '../../domain/pregnancy.dart';
 import '../sheets/closet_sheet.dart';
+import 'baby_avatar.dart';
 import 'spring_tap.dart';
 
-/// App top bar: baby & week pill + circular action buttons (Closet, Lamp, Pause, Settings).
+/// App top bar: mini baby avatar + name/week greeting (Reference Image 3 style)
+/// and circular action buttons (Closet, Lamp, Pause).
 class TopBar extends StatelessWidget implements PreferredSizeWidget {
   const TopBar({super.key, required this.state});
 
@@ -20,47 +22,72 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
     final week = state.dueDate == null
         ? '—'
         : 'Week ${PregnancyCalculator.weekFromDueDate(dueDate: state.dueDate!, currentDate: DateTime.now())}';
+    final avatarNeed = state.costumeOverride ?? state.todayNeed;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 10, 16, 6),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Baby name & gestational week pill
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            decoration: BoxDecoration(
-              color: palette.paper,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(
-                    alpha: palette.isHalloween ? 0.25 : 0.05,
-                  ),
-                  blurRadius: 10,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
+          // Mini avatar + Week / Name greeting (tapping opens Settings tab)
+          GestureDetector(
+            onTap: () => state.setTab(3),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 8,
-                  height: 8,
+                  width: 40,
+                  height: 40,
+                  padding: const EdgeInsets.all(2),
                   decoration: BoxDecoration(
-                    color: palette.moon,
+                    color: palette.paper,
                     shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(
+                          alpha: palette.isHalloween ? 0.25 : 0.05,
+                        ),
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: ClipOval(
+                    child: Image.asset(
+                      BabyAvatar.assetPathFor(
+                        isHalloween: palette.isHalloween,
+                        need: avatarNeed,
+                      ),
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) =>
+                          Icon(Icons.child_care, color: palette.moon, size: 20),
+                    ),
                   ),
                 ),
-                const SizedBox(width: 8),
-                Text(
-                  '${state.babyDisplayName} · $week',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                    color: palette.ink,
-                  ),
+                const SizedBox(width: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      week,
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: palette.moonlightSoft,
+                        height: 1.1,
+                      ),
+                    ),
+                    Text(
+                      state.babyDisplayName,
+                      style: TextStyle(
+                        fontSize: 15.5,
+                        fontWeight: FontWeight.w800,
+                        color: palette.moonlight,
+                        height: 1.15,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

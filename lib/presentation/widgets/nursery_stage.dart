@@ -101,24 +101,24 @@ class NurseryStage extends StatelessWidget {
               ),
             ),
 
-            // Soft ground shadow under baby
+            // Soft ground shadow aligned directly beneath baby's feet
             Positioned(
-              bottom: 14,
+              bottom: 18,
               child: Container(
-                width: avatarSize * 0.54,
-                height: 12,
+                width: avatarSize * 0.44,
+                height: 11,
                 decoration: BoxDecoration(
                   color: Colors.black.withValues(
-                    alpha: palette.isHalloween ? 0.28 : 0.06,
+                    alpha: palette.isHalloween ? 0.28 : 0.07,
                   ),
                   borderRadius: BorderRadius.circular(100),
                 ),
               ),
             ),
 
-            // 5-layer Baby Paper-Doll
+            // Soft pastel Baby Paper-Doll seated directly on shadow
             Positioned(
-              bottom: 6,
+              bottom: -14,
               child: BabyAvatar(
                 need: need,
                 tone: tone,
