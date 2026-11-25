@@ -171,24 +171,29 @@ class _BabyAvatarState extends State<BabyAvatar>
       );
     }
 
+    final useSoftPastelEveryday =
+        !palette.isHalloween && widget.poseOverride == null;
+
     final doll = SizedBox(
       width: widget.size,
       height: widget.size,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          layer(bodyPath, withFallback: true),
-          if (backExtra != null) layer(backExtra),
-          layer(headPath),
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 260),
-            switchInCurve: Curves.easeOutCubic,
-            switchOutCurve: Curves.easeInCubic,
-            child: layer(expressionPath, key: ValueKey(expressionPath)),
-          ),
-          if (frontExtra != null) layer(frontExtra),
-        ],
-      ),
+      child: useSoftPastelEveryday
+          ? layer('assets/images/pastel-everyday-baby.png', withFallback: true)
+          : Stack(
+              alignment: Alignment.center,
+              children: [
+                layer(bodyPath, withFallback: true),
+                if (backExtra != null) layer(backExtra),
+                layer(headPath),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 260),
+                  switchInCurve: Curves.easeOutCubic,
+                  switchOutCurve: Curves.easeInCubic,
+                  child: layer(expressionPath, key: ValueKey(expressionPath)),
+                ),
+                if (frontExtra != null) layer(frontExtra),
+              ],
+            ),
     );
 
     if (disableAnimations) return doll;

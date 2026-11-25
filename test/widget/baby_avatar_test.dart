@@ -13,9 +13,7 @@ Widget _wrap(Widget child, AppPalette palette) {
 
 void main() {
   group('BabyAvatar', () {
-    testWidgets('renders 5-layer everyday paper-doll in Everyday mode', (
-      tester,
-    ) async {
+    testWidgets('renders soft pastel baby in Everyday mode', (tester) async {
       await tester.pumpWidget(
         _wrap(const BabyAvatar(need: MaternalNeed.bones), AppPalette.everyday),
       );
@@ -23,9 +21,7 @@ void main() {
       final assets = images
           .map((i) => (i.image as AssetImage).assetName)
           .toList();
-      expect(assets, contains('assets/images/bodies/everyday/fair.png'));
-      expect(assets, contains('assets/images/heads/fair.png'));
-      expect(assets, contains('assets/images/expressions/calm.png'));
+      expect(assets, contains('assets/images/pastel-everyday-baby.png'));
     });
 
     testWidgets(
